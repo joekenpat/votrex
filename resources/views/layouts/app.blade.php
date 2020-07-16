@@ -22,7 +22,6 @@
                         <a class="uk-navbar-item uk-logo" href="/">{{ config('app.name', 'Laravel') }}</a>
 
                         <ul class="uk-navbar-nav">
-                            <li><a href="{{ route('demo') }}">Theme Demo</a></li>
                             <li>
                                 <a href="#">Useful Links</a>
                                 <div class="uk-navbar-dropdown uk-navbar-dropdown-width-3">
@@ -30,19 +29,19 @@
                                         <div>
                                             <ul class="uk-nav uk-navbar-dropdown-nav">
                                                 <li class="uk-nav-header">Laravel</li>
-                                                @include('laravel')
+
                                             </ul>
                                         </div>
                                         <div>
                                             <ul class="uk-nav uk-navbar-dropdown-nav">
                                                 <li class="uk-nav-header">UIkit</li>
-                                                @include('uikit')
+
                                             </ul>
                                         </div>
                                         <div>
                                             <ul class="uk-nav uk-navbar-dropdown-nav">
                                                 <li class="uk-nav-header">Vue.js</li>
-                                                @include('vuejs')
+                                                
                                             </ul>
                                         </div>
                                     </div>

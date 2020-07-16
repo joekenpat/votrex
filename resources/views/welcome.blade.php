@@ -14,7 +14,7 @@
                     <div class="uk-card uk-card-default uk-card-body uk-card-hover">
                         <h3 class="uk-card-title">Laravel</h3>
                         <ul class="uk-list uk-list-divider">
-                            @include('laravel')
+
                         </ul>
                     </div>
                 </div>
@@ -22,7 +22,7 @@
                     <div class="uk-card uk-card-primary uk-card-body uk-card-hover">
                         <h3 class="uk-card-title">UIkit</h3>
                         <ul class="uk-list uk-list-divider">
-                            @include('uikit')
+
                         </ul>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="uk-card uk-card-secondary uk-card-body uk-card-hover">
                         <h3 class="uk-card-title">Vue.js</h3>
                         <ul class="uk-list uk-list-divider">
-                            @include('vuejs')
+                          
                         </ul>
                     </div>
                 </div>
