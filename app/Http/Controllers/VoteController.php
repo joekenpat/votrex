@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Contest;
+use App\User;
 use App\Vote;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+use Unicodeveloper\Paystack\Facades\Paystack;
 
 
 class VoteController extends Controller
@@ -37,7 +41,7 @@ class VoteController extends Controller
     $vote_sort_type = function () use ($sort_type) {
       $vote_sort_type_map = ["asc", 'desc'];
       if (in_array($sort_type, $vote_sort_type_map)) {
-        return $vote_sort_type_map[$sort_type];
+        return $sort_type;
       } else {
         return 'asc';
       }
@@ -53,23 +57,14 @@ class VoteController extends Controller
 
     if (Auth()->user()) {
       try {
-        $votes = Vote::with('user')
-          ->with('tags:name')
-          ->where('status', $vote_status())
-          ->orderBy('created', $vote_sort_type())
+        $votes = Vote::where('status', $vote_status())
+          ->orderBy('created_at', $vote_sort_type())
           ->paginate($item_result_count());
-        $success['data'] = $votes;
-        return response()->json([
-          'success' => $success,
-        ], Response::HTTP_OK);
+        return view('vote.index', ['votes' => $votes]);
       } catch (ModelNotFoundException $mnt) {
-        return response()->json([
-          'error' => 'No vote Found',
-        ], Response::HTTP_NOT_FOUND);
+        return back()->with('error', 'Vote not found');
       } catch (\Exception $e) {
-        return response()->json([
-          'error' => sprintf("message: %s. Error File: %s. Error Line: %s", $e->getMessage(), $e->getFile(), $e->getLine()),
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        return back()->with('error', $e->getMessage());
       }
     }
   }
@@ -90,35 +85,60 @@ class VoteController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request, $contest_id, $contestant_id)
   {
-    $media_url = [];
-    $this->validate($request, [
-      'first_name' => 'required|alpha|max:25|min:2|',
-      'last_name' => 'required|alpha|max:25|min:2|',
-      'email' => 'required|email:rfc,dns|max:150|min:5|',
-      'quantity' => 'numeric|min:1|max:10000|',
-      'user_id' => 'required|uuid|exists:users,id|',
-      'contest_id' => 'required|uuid|exists:contests,id|',
+    // $validator = Validator::make($request->all(), [
+    //   'first_name' => 'required|alpha|max:25|min:2|',
+    //   'last_name' => 'required|alpha|max:25|min:2|',
+    //   'email' => 'required|email|max:150|min:5|',
+    //   'quantity' => 'numeric|min:1|max:10000|',
+    // ]);
+    // if ($validator->fails()) {
+    //   // dd($validator->errors());
+    //   return back()->withErrors($validator->errors())->withInput();
+    // }
+    // try {
+    //   $contest = Contest::where('id', $contest_id)->firstOrFail();
+    // } catch (ModelNotFoundException $mnt) {
+    //   return back()->with('error', 'Contest not found');
+    // } catch (\Exception $e) {
+    //   return back()->with('error', $e->getMessage());
+    // }
+    // try {
+    //   $contestant = User::where('id', $contestant_id)->firstOrFail();
+    // } catch (ModelNotFoundException $mnt) {
+    //   return back()->with('error', 'Contestant not found')->withInput();
+    // } catch (\Exception $e) {
+    //   return back()->with('error', $e->getMessage())->withInput();
+    // }
 
-    ]);
+    // try {
+    //   $paystack_ref = Paystack::genTranxRef();
+    //   $new_vote = new Vote();
+    //   $new_vote->first_name = $request->input('first_name');
+    //   $new_vote->last_name = $request->input('last_name');
+    //   $new_vote->quantity = $request->input('quantity');
+    //   $new_vote->email = $request->input('email');
+    //   $new_vote->status = 'invalid';
+    //   $new_vote->amount = $request->input('quantity') * $contest->vote_fee;
+    //   $new_vote->paystack_ref = $paystack_ref;
+    //   $new_vote->user_id = $contestant->id;
+    //   $new_vote->contest_id = $contest->id;
+    //   $new_vote->save();
 
-    try {
-      $new_vote = new Vote();
-      $new_vote->first_name = $request->input('first_name');
-      $new_vote->last_name = $request->input('last_name');
-      $new_vote->quantity = $request->input('quantity');
-      $new_vote->status = 'invalid';
-      $new_vote->paystack_ref = null;
-      $new_vote->save();
-      $new_vote->user()->associate($request->input('user_id'));
-      $new_vote->contest()->associate($request->input('contest_id'));
-    } catch (\Exception $e) {
-      $message = sprintf("message: %s. Error File: %s. Error Line: %s", $e->getMessage(), $e->getFile(), $e->getLine());
-      return response()->json([
-        'error' => $message,
-      ], Response::HTTP_INTERNAL_SERVER_ERROR);
-    }
+    //   $data = [
+    //     "amount" => intval($new_vote->amount),
+    //     "quantity" => intval(1),
+    //     "reference" => $paystack_ref,
+    //     "email" => $new_vote->email,
+    //     "first_name" => $new_vote->first_name,
+    //     "last_name" => $new_vote->last_name,
+    //     "currency" => "NGN",
+    //   ];
+    //   return redirect()->back()->with('success', sprintf('Your Vote for %s was Successful!', $contestant->get_full_name()));
+    // } catch (\Exception $e) {
+    //   return back()->with('error', $e->getMessage())->withInput();
+    // }
   }
 
   /**

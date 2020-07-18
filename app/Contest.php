@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contest extends Model
 {
+  use UuidForKey;
+  /**
+    * Indicates if the IDs are auto-incrementing.
+    *
+    * @var bool
+    */
+    public $incrementing = false;
+
   protected $fillable = [
     'title', 'reg_fee','vote_fee',
     'image',
@@ -38,13 +46,13 @@ class Contest extends Model
    */
   public function contestants()
   {
-    return $this->hasMany(Contestant::class,  'contestant_contests', 'contestant_id','contest_id');
+    return $this->belongsToMany(User::class,  'contest_user', 'contest_id','user_id');
   }
 
-  public function votes()
-  {
-    return $this->hasManyThrough(Vote::class ,Contestant::class);
-  }
+  // public function votes()
+  // {
+  //   return $this->hasManyThrough(Vote::class ,User::class);
+  // }
 
   public function is_active()
   {

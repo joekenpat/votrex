@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
+  use UuidForKey;
+  /**
+   * Indicates if the IDs are auto-incrementing.
+   *
+   * @var bool
+   */
+  public $incrementing = false;
+
+
   protected $fillable = [
     'first_name', 'last_name','email',
     'paystack_ref','status','quantity',
@@ -46,7 +55,7 @@ class Vote extends Model
    */
   public function contestant()
   {
-    return $this->belongsTo(Contestant::class,  'user_id');
+    return $this->belongsTo(User::class,  'user_id');
   }
 
 }
