@@ -19,9 +19,9 @@
     <div id="side_nav" uk-offcanvas="mode: push; overlay: true">
       <div class="uk-offcanvas-bar white">
         <ul class="uk-nav uk-nav-default">
-          <li class="uk-active uk-text-center">
+          {{-- <li class="uk-active uk-text-center">
             <a class=" uk-margin-small-top uk-margin-small-bottom" href="index.html">
-              <img src="/image/misc/mfi-logo.png" style="height: 100px"></a></li>
+              <img src="/image/misc/mfi-logo.png" style="height: 100px"></a></li> --}}
           <li>
             <a class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
               href="/">{{ __('Contests') }}</a>

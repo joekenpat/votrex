@@ -190,7 +190,7 @@ class ContestController extends Controller
       $img = $request->file('image');
       $img_ext = $img->getClientOriginalExtension();
       $img_name = sprintf("CONTEST_%s.%s", $updateable_contest->id, $img_ext);
-      $destination_path = public_path(sprintf("images\contest\%s",$updateable_contest->id));
+      $destination_path = public_path(sprintf("images/contest/%s",$updateable_contest->id));
       $img->move($destination_path, $img_name);
       $data['image'] = $img_name;
       }
