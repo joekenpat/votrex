@@ -46,13 +46,13 @@ class NewVote extends Notification implements ShouldQueue
     {
       $greeting = sprintf("Hello! %s", $this->user->first_name);
       $title = sprintf("%s New Vote Recieved",$this->vote->quantity);
-      $message1 = sprintf("You just recieved %s new vote for: %s contest from %s %s.",$this->vote->last_name, $this->vote->first_name);
+      $message1 = sprintf("You just recieved %s new vote for: %s contest from %s %s.",$this->vote->quantity ,$this->vote->contest->title, $this->vote->last_name, $this->vote->first_name);
       $message2 = sprintf("The Voter left an email: %s you can write back to appreciate the effort.", $this->vote->email);
       $message3 = sprintf("The Contest: %s has just received %s new vote that sums upto %s.",$this->vote->contest->title, $this->vote->quantity, $this->vote->amount);
         return (new MailMessage)
         ->greeting($greeting)
                     ->line(sprintf("%s",$this->user->role =='admin'?$message3:$message1.$message2))
-                    ->action('View your votes', route('list_votes'))
+                    ->action('View your votes', route('list_vote'))
                     ->line('Thank you for taking your time to read this email')
                     ->line(sprintf("You are receiving this email because your are register as a %s at %", $this->user->role =='admin'?'Administrator':'Contestant', config('APP_NAME')));
     }

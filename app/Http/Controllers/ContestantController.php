@@ -128,7 +128,7 @@ class ContestantController extends Controller
       $validator = Validator::make($request->all(), [
         'first_name' => 'required|alpha|max:25|min:2',
         'last_name' => 'required|alpha|max:25|min:2',
-        'middle_name' => 'alpha|max:25|min:2',
+        'middle_name' => 'nullable|alpha|max:25|min:2',
         'phone' => 'required|string|max:15|min:8',
         'gender' => 'required|string|min:4|max:7|',
         'state' => 'required|string|min:4',

@@ -13,7 +13,8 @@ use App\Vote;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Unicodeveloper\Paystack\Facades\Paystack;
+use Unicodeveloper\Paystack\Paystack;
+
 
 class PaymentController extends Controller
 {
@@ -28,10 +29,7 @@ class PaymentController extends Controller
       'first_name' => 'required|alpha|max:25|min:2|',
       'last_name' => 'required|alpha|max:25|min:2|',
       'email' => 'required|email|max:150|min:5|',
-      'xquantity' => 'numeric|min:1|max:10000|',
-      'quantity' => 'numeric|max:1|',
-      'reference' => 'required|string|max:50|',
-      'amount'=> 'required|numeric|min:1|',
+      'xquantity' => 'numeric|min:1|',
       'contest_id' => 'required|uuid|exists:contests,id|',
       'contestant_id' => 'required|uuid|exists:users,id|',
     ]);
@@ -54,22 +52,29 @@ class PaymentController extends Controller
       return back()->with('error', $e->getMessage())->withInput();
     }
     try {
+      $paystack =  new Paystack();
       $new_vote = new Vote();
       $new_vote->first_name = $request->input('first_name');
       $new_vote->last_name = $request->input('last_name');
-      $new_vote->quantity = $request->input('quantity');
+      $new_vote->quantity = $request->input('xquantity');
       $new_vote->email = $request->input('email');
       $new_vote->status = 'invalid';
-      $new_vote->amount = $request->input('quantity') * $contest->vote_fee;
-      $new_vote->paystack_ref = $request->input('reference');
+      $new_vote->amount = $request->input('xquantity') * $contest->vote_fee;
+      $new_vote->paystack_ref = $paystack->genTranxRef();
       $new_vote->user_id = $contestant->id;
       $new_vote->contest_id = $contest->id;
       $new_vote->save();
+
+      $request->reference = $new_vote->paystack_ref;
+      $request->amount = ($new_vote->amount * 100);
+      $request->quantity = 1;
+      $request->metadata = ['contestant_id' => $contestant->id, 'contest_id' => $contest->id,];
+      $request->key = config('paystack.secretKey');
     } catch (\Exception $e) {
       return back()->with('error', $e->getMessage())->withInput();
     }
 
-    return Paystack::getAuthorizationUrl()->redirectNow();
+    return $paystack->getAuthorizationUrl()->redirectNow();
   }
 
   /**
@@ -78,20 +83,21 @@ class PaymentController extends Controller
    */
   public function handleGatewayCallback()
   {
-    $paymentDetails = Paystack::getPaymentData();
+    $paystack = new Paystack();
+    $paymentDetails = $paystack->getPaymentData();
 
     // dd($paymentDetails);
     // dd($paymentDetails['data']['reference']);
-    $valid_vote = Vote::where('paystack_ref',$paymentDetails['data']['reference'])->firstOrFail();
-      if($paymentDetails['data']['status'] === "success"){
+    $valid_vote = Vote::where('paystack_ref', $paymentDetails['data']['reference'])->firstOrFail();
+    if ($paymentDetails['data']['status'] === "success") {
       $valid_vote->status =  'valid';
       $valid_vote->update();
-      $valid_vote->contestant->notify(new NewVote($valid_vote->contestant,$valid_vote));
-      $admin  = User::where('role','admin')->firstOrFail();
-      $admin->notify(new NewVote($admin,$valid_vote));
-      return redirect()->route('visit_contest_contestant',['contest_id'=>$valid_vote->contest_id,'contestant_id'=>$valid_vote->user_id])->with('success', sprintf('Your Vote for %s was Successful!', $valid_vote->contestant->get_full_name()));
-    }else{
-      return redirect()->route('visit_contest_contestant',['contest_id'=>$valid_vote->contest_id,'contestant_id'=>$valid_vote->user_id])->with('error', sprintf('Your Vote for %s was unsuccessful!', $valid_vote->contestant->get_full_name()));
+      // $valid_vote->contestant->notify(new NewVote($valid_vote->contestant,$valid_vote));
+      // $admin  = User::where('role','admin')->firstOrFail();
+      // $admin->notify(new NewVote($admin,$valid_vote));
+      return redirect()->route('visit_contest_contestant', ['contest_id' => $valid_vote->contest_id, 'contestant_id' => $valid_vote->user_id])->with('success', sprintf('Your Vote for %s was Successful!', $valid_vote->contestant->get_full_name()));
+    } else {
+      return redirect()->route('visit_contest_contestant', ['contest_id' => $valid_vote->contest_id, 'contestant_id' => $valid_vote->user_id])->with('error', sprintf('Your Vote for %s was unsuccessful!', $valid_vote->contestant->get_full_name()));
     }
 
     // Now you have the payment details,
