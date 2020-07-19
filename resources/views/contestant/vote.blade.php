@@ -11,7 +11,7 @@
     <div class="uk-card-body">
       <div uk-grid>
         <div class="uk-width-1-1 uk-width-1-3@m ">
-          <img class="uk-border-circle uk-align-center" width="300" height="300" style=" border: 4px solid white"
+          <img class="uk-border-circle uk-align-center contestant_avatar uk-width-1-1"
             src="{{$contestant->avatar != null?URL::to(sprintf("images/users/%s/%s",$contestant->id,$contestant->avatar)):asset("images/misc/default_avatar.png") }}">
         </div>
 

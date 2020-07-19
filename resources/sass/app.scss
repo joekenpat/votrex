@@ -99,8 +99,22 @@ margin: auto;
   margin: auto;
   padding-top: 2%;
 }
-.contest_image
+.contestant_avatar
 {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border:4px solid #fff;
+  height: 280px;
+  max-height: 300px;
+  width: 280px;
+  max-width: 300px;
+  object-fit: cover;
+}
+.contestant_thumb
+{
+  border:2px solid #fff !important;
+  height: 150px !important;
+  max-height: 150px !important;
+  width: 150px !important;
+  max-width: 150px !important;
+  object-fit: cover !important;
+  margin-top: -40px !important;
 }

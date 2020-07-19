@@ -20,7 +20,7 @@
     <div class="uk-width-1-2@s uk-width-1-4@m">
       <div class="uk-card  uk-card-default my-card ">
         <div class="uk-width-auto uk-text-center ">
-          <img class="uk-border-circle" width="100" height="100" style="margin-top:-20px; border: 4px 4px 4px black"
+          <img class="uk-border-circle contestant_thumb"
             src="{{$contestant->avatar != null?asset(sprintf("images/users/%s/%s",$contestant->id,$contestant->avatar)):asset("images/misc/default_avatar.png") }}">
         </div>
         <div class="uk-card-body uk-text-center uk-padding-small">
