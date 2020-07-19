@@ -56,7 +56,7 @@ class ContestController extends Controller
   }
 
 
-/**
+  /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response
@@ -75,6 +75,41 @@ class ContestController extends Controller
       } catch (\Exception $e) {
         return back()->with('error', $e->getMessage());
       }
+    }
+  }
+
+
+  /**
+   * find a resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function find_contest_contestant(Request $request, $contest_id)
+  {
+    $validator = Validator::make($request->all(), [
+      'findable' => 'required|alpha|min:3|max:20|',
+    ]);
+    if ($validator->fails()) {
+      return back()->withErrors($validator->errors())->withInput();
+    }
+    $findable = $request->input('findable');
+    try {
+      $contest = Contest::where('id',$contest_id)->firstOrFail();
+      $contestant_count = $contest->contestants()->where('first_name','LIKE', "%{$findable}%")
+      ->orwhere('last_name','LIKE', "%{$findable}%")
+      ->orwhere('middle_name','LIKE', "%{$findable}%")->count();
+      $contestants = $contest->contestants()->where('first_name','LIKE', "%{$findable}%")
+      ->orwhere('last_name','LIKE', "%{$findable}%")
+      ->orwhere('middle_name','LIKE', "%{$findable}%")->paginate(10);
+      if($contestant_count == 0){
+        return redirect()->route('list_contest_contestant',['contest_id' => $contest])->with('info','No contestant in this contest matched your search.');
+      }else{
+        return view('contestant.index', ['contest' => $contest, 'contestants' => $contestants]);
+      }
+    } catch (ModelNotFoundException $mnt) {
+      return back()->with('error', 'Contest not found');
+    } catch (\Exception $e) {
+      return back()->with('error', $e->getMessage());
     }
   }
 
@@ -119,7 +154,7 @@ class ContestController extends Controller
       $img = $request->file('image');
       $img_ext = $img->getClientOriginalExtension();
       $img_name = sprintf("CONTEST_%s.%s", $new_contest->id, $img_ext);
-      $destination_path = public_path(sprintf(sprintf("images\contest\%s",$new_contest->id)));
+      $destination_path = public_path(sprintf(sprintf("images\contest\%s", $new_contest->id)));
       $img->move($destination_path, $img_name);
       $data['image'] = $img_name;
 
@@ -187,12 +222,12 @@ class ContestController extends Controller
       $updateable_contest = Contest::where('id', $contest_id)->firstOrFail();
       if ($request->hasFile('image')) {
         //adding images
-      $img = $request->file('image');
-      $img_ext = $img->getClientOriginalExtension();
-      $img_name = sprintf("CONTEST_%s.%s", $updateable_contest->id, $img_ext);
-      $destination_path = public_path(sprintf("images/contest/%s",$updateable_contest->id));
-      $img->move($destination_path, $img_name);
-      $data['image'] = $img_name;
+        $img = $request->file('image');
+        $img_ext = $img->getClientOriginalExtension();
+        $img_name = sprintf("CONTEST_%s.%s", $updateable_contest->id, $img_ext);
+        $destination_path = public_path(sprintf("images/contest/%s", $updateable_contest->id));
+        $img->move($destination_path, $img_name);
+        $data['image'] = $img_name;
       }
       $updateable_contest->update($data);
       return redirect()->route('admin_list_contest')->with('success', 'Contest Updated');
@@ -265,7 +300,7 @@ class ContestController extends Controller
     }
     try {
       $contestant = User::where('id', $contestant_id)->firstOrFail();
-      return view('contestant.vote', ['contestant' => $contestant,'contest'=>$contest]);
+      return view('contestant.vote', ['contestant' => $contestant, 'contest' => $contest]);
     } catch (ModelNotFoundException $mnt) {
       return back()->with('error', 'Contestant not found');
     } catch (\Exception $e) {
@@ -273,4 +308,3 @@ class ContestController extends Controller
     }
   }
 }
-

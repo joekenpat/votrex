@@ -47,6 +47,7 @@ Route::group(['prefix' => 'profile', 'middleware' => ['auth']], function () {
 /* user route for contest manipulation */
 Route::group(['prefix' => 'contest'], function () {
   Route::get('/', 'ContestController@index')->name('list_contest');
+  Route::post('{contest_id}/find', 'ContestController@find_contest_contestant')->name('find_contestant');
   Route::get('/{contest_id}/contestant/', 'ContestController@list_contest_contestant')->name('list_contest_contestant');
   Route::post('/{contest_id}/vote/{contestant_id}/', 'VoteController@store')->name('vote_contestant');
   Route::get('/{contest_id}/visit/{contestant_id}/', 'ContestController@visit_contest_contestant')->name('visit_contest_contestant');
@@ -96,6 +97,5 @@ Route::get('/', function () {
 });
 Route::get('vote/list', 'VoteController@index')->name('list_vote');
 Route::get('/contestant/{contestant_id}', 'ContestantController@visit_contestant')->name('visit_contestant');
-Route::post('contestant/find/{param}', 'ContestantController@find')->name('find_contestant');
 
 
