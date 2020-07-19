@@ -11,7 +11,7 @@
     <div class="uk-card-body">
       <div uk-grid>
         <div class="uk-width-1-1 uk-width-1-3@m ">
-          <img class="uk-border-circle uk-align-center" width="300" height="300" style=" border: 4px solid white"
+          <img class="uk-border-circle uk-align-center contestant_avatar uk-width-1-1"
             src="{{$contestant->avatar != null?URL::to(sprintf("images/users/%s/%s",$contestant->id,$contestant->avatar)):asset("images/misc/default_avatar.png") }}">
         </div>
 
@@ -95,14 +95,9 @@
           <input class="uk-input" type="number" id="xquantity" value="1" name="xquantity" min="1"
             onkeyup="calc_vote_amt()" onchange="calc_vote_amt()">
         </div>
-        <input type="hidden" name="amount" id="amount" value="{{$contest->vote_fee}}">
         <input type="hidden" name="quantity" value="1">
         <input type="hidden" name="contest_id" value="{{$contest->id}}">
         <input type="hidden" name="contestant_id" value="{{$contestant->id}}">
-        <input type="hidden" name="currency" value="NGN">
-        <input type="hidden" name="metadata"
-          value="{{ json_encode(['contestant_id' => $contestant->id,'contest_id' => $contest->id,]) }}">
-        <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}">
         <div class="uk-width-2-3 uk-align-center uk-animation-toggle" tabindex="0">
           <button type="submit" class="uk-button uk-width-1-1" style="background-color:#3D9FB9; color:white;">
             <b>Vote</b> N<span id="vote_amount">{{$contest->vote_fee}}</span></button>
@@ -121,7 +116,6 @@
 <script>
   function calc_vote_amt(){
     document.getElementById('vote_amount').innerHTML = document.getElementById('xquantity').value * {{ $contest->vote_fee }};
-    document.getElementById('amount').value = (document.getElementById('xquantity').value * {{ $contest->vote_fee}}) * 100;
   }
 </script>
 

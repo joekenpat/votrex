@@ -16,7 +16,7 @@
           @csrf
           <div class="uk-grid-small" uk-grid>
             <div class="uk-width-1-1">
-              <img class="uk-border-rounded uk-align-center" width="250" height="250" style=" border: 4px solid white"
+              <img class="uk-border-circle uk-align-center contestant_avatar uk-width-1-1"
                 src="{{Auth::user()->avatar != null?asset(sprintf("images/users/%s/%s",Auth::user()->id,Auth::user()->avatar)):asset("images/misc/default_avatar.png") }}">
             </div>
             <div class="uk-width-1-2">
@@ -116,7 +116,7 @@
           @csrf
           <div class="uk-grid-small" uk-grid>
             <div class="uk-width-1-1">
-              <img class="uk-border-rounded uk-align-center" width="250" height="250" style=" border: 4px solid white"
+              <img class="uk-border-circle uk-align-center contestant_avatar uk-width-1-1"
                 src="{{Auth::user()->avatar != null?asset(sprintf("images/users/%s/%s",Auth::user()->id,Auth::user()->avatar)):asset("images/misc/default_avatar.png") }}">
             </div>
             <div class="uk-width-1-2">

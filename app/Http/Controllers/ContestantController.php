@@ -128,7 +128,7 @@ class ContestantController extends Controller
       $validator = Validator::make($request->all(), [
         'first_name' => 'required|alpha|max:25|min:2',
         'last_name' => 'required|alpha|max:25|min:2',
-        'middle_name' => 'alpha|max:25|min:2',
+        'middle_name' => 'nullable|alpha|max:25|min:2',
         'phone' => 'required|string|max:15|min:8',
         'gender' => 'required|string|min:4|max:7|',
         'state' => 'required|string|min:4',
@@ -160,7 +160,7 @@ class ContestantController extends Controller
         $avatar = $request->file('avatar');
         $img_ext = $avatar->getClientOriginalExtension();
         $img_name = sprintf("CAVATAR_%s.%s", Auth::user()->id, $img_ext);
-        $destination_path = public_path(sprintf("images\users\%s", Auth::user()->id));
+        $destination_path = public_path(sprintf("images/users/%s", Auth::user()->id));
         $avatar->move($destination_path, $img_name);
         $data['avatar'] = $img_name;
       }
@@ -170,7 +170,7 @@ class ContestantController extends Controller
         foreach ($media as $md) {
           $img_ext = $md->getClientOriginalExtension();
           $img_name = sprintf("CMEDIA_%s.%s", bin2hex(random_bytes(10)), $img_ext);
-          $destination_path = public_path(sprintf("images\users\%s", Auth::user()->id));
+          $destination_path = public_path(sprintf("images/users/%s", Auth::user()->id));
           $md->move($destination_path, $img_name);
           $image_url[] = $img_name;
         }

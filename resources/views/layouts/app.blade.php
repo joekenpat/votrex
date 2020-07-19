@@ -19,9 +19,9 @@
     <div id="side_nav" uk-offcanvas="mode: push; overlay: true">
       <div class="uk-offcanvas-bar white">
         <ul class="uk-nav uk-nav-default">
-          <li class="uk-active uk-text-center">
+          {{-- <li class="uk-active uk-text-center">
             <a class=" uk-margin-small-top uk-margin-small-bottom" href="index.html">
-              <img src="/image/misc/mfi-logo.png" style="height: 100px"></a></li>
+              <img src="/image/misc/mfi-logo.png" style="height: 100px"></a></li> --}}
           <li>
             <a class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
               href="/">{{ __('Contests') }}</a>
@@ -121,11 +121,10 @@
                 <!-- Authentication Links -->
                 @guest
                 @if (Route::has('login'))
-                <li>
+                <li class="uk-visible@s">
                   <div class="uk-animation-toggle" tabindex="0">
                     <div class="uk-padding-small">
-                      <a href="/login"> <button class=" uk-animation-shake uk-button uk-button-large"
-                          style="background-color:#EF7D11; border-radius: 30px; box-shadow: 0px 0px 3px 1px black;
+                      <a href="/login"> <button class=" uk-animation-shake uk-button uk-button-large" style="background-color:#EF7D11; border-radius: 30px; box-shadow: 0px 0px 3px 1px black;
                                       color:white;">
                           <b>LOG IN</b></button></a>
                     </div>
@@ -133,11 +132,10 @@
                 </li>
                 @endif
                 @if (Route::has('register'))
-                <li>
+                <li class="uk-visible@s">
                   <div class="uk-animation-toggle" tabindex="0">
                     <div class="uk-padding-small">
-                      <a href="/register"> <button class=" uk-animation-shake uk-button uk-button-large"
-                          style="background-color:#3D9FB9; border-radius: 30px; box-shadow: 0px 0px 3px 1px black;
+                      <a href="/register"> <button class=" uk-animation-shake uk-button uk-button-large" style="background-color:#3D9FB9; border-radius: 30px; box-shadow: 0px 0px 3px 1px black;
                                       color:white;">
                           <b>Register</b></button></a>
                     </div>
