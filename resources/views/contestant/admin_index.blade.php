@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'List of Users')
 @section('content')
 @if(Auth::user()->is_admin())
 <div class="uk-container">
@@ -13,8 +13,9 @@
             <th>NAME</th>
             <th>GENDER</th>
             <th>AGE</th>
-            <th>SCHOOL</th>
-            <th>LEVEL</th>
+            <th>EMAIL</th>
+            <th>PHONE</th>
+            <th>ROLE</th>
             <th>NUMBER OF CONTEST</th>
             <th>NUMBER OF VOTE</th>
             <th>ACTION</th>
@@ -22,10 +23,25 @@
         </thead>
         <tbody>
           @foreach ($contestants as $contestant)
+          @if ($contestant->is_admin())
+          <tr>
+            <td>{{$loop->iteration}}</td>
+            <td>{{$contestant->get_full_name()}}</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>{{$contestant->email}}</td>
+            <td>{{$contestant->phone}}</td>
+            <td><span class="uk-label">ADMIN</span></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+          </tr>
+          @else
           <tr>
             <td>{{$loop->iteration}}</td>
             <td>{{$contestant->get_full_name()}}</td>
             <td>{{$contestant->gender}}</td>
+            <td><span class="uk-label uk-label-warning">USER</span></td>
             <td>{{$contestant->age}}</td>
             <td>{{$contestant->school != null?$contestant->school->name:null}}</td>
             <td>{{$contestant->sch_level}}</td>
@@ -33,13 +49,11 @@
             <td>{{$contestant->votes->count()}}</td>
             <td>
               <div>
-                <a href="{{ route('visit_contestant',["contestant_id"=>$contestant->id]) }}" class="uk-button uk-button-small"
-                  uk-tooltip="View Contestant">
-                  View
-                </a>
+                <a onclick="confirm_action(event, this)" href="{{ route('visit_contestant',["contestant_id"=>$contestant->id]) }}" style="color:blue" uk-tooltip="View User" class="uk-icon-link uk-margin-small-right" uk-icon="icon:user; ratio:1.3"></span></a>
               </div>
             </td>
           </tr>
+          @endif
           @endforeach
         </tbody>
       </table>
@@ -50,8 +64,23 @@
       {!! $contestants->links() !!}
     </div>
     @endif
-
   </div>
 </div>
+@push('bottom_scripts')
+<script>
+  function confirm_action(e,t){
+  e.preventDefault();
+  e.target.blur();
+  var self_link = t.getAttribute('href')
+  var self_action = t.getAttribute('uk-tooltip')
+  UIkit.modal.confirm(`Do you want to ${self_action}!`).then(function () {
+      e.isDefaultPrevented = function(){ return false; }
+    // retrigger with the exactly same event data
+    location.href = self_link
+  }, function () {
+  });
+  }
+</script>
+@endpush
 @endif
 @endsection

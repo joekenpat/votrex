@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class ContestantController extends Controller
@@ -90,7 +91,7 @@ class ContestantController extends Controller
   {
     if (Auth::user()->is_admin()) {
       $contest_count = Contest::count();
-      $contestant_count = User::where('role', '!=', 'admin')->count();
+      $contestant_count = User::count();
       $vote_count = Vote::where('status', 'valid')->count();
       $school_count = School::count();
       return view('home', [
@@ -163,16 +164,36 @@ class ContestantController extends Controller
         $destination_path = public_path(sprintf("images/users/%s", Auth::user()->id));
         $avatar->move($destination_path, $img_name);
         $data['avatar'] = $img_name;
+        if (Auth::user()->avatar != null) {
+          $path = public_path(sprintf("images/users/%s/%s", Auth::user()->id, Auth::user()->avatar));
+          if (File::exists($path)) {
+            File::delete($path);
+          }
+        }
       }
       if ($request->hasFile('media')) {
         $image_url = [];
         $media = $request->file('media');
+        $max_media_count = 1;
         foreach ($media as $md) {
-          $img_ext = $md->getClientOriginalExtension();
-          $img_name = sprintf("CMEDIA_%s.%s", bin2hex(random_bytes(10)), $img_ext);
-          $destination_path = public_path(sprintf("images/users/%s", Auth::user()->id));
-          $md->move($destination_path, $img_name);
-          $image_url[] = $img_name;
+          if ($max_media_count <= 5) {
+            $img_ext = $md->getClientOriginalExtension();
+            $img_name = sprintf("CMEDIA_%s.%s", bin2hex(random_bytes(10)), $img_ext);
+            $destination_path = public_path(sprintf("images/users/%s", Auth::user()->id));
+            $md->move($destination_path, $img_name);
+            $image_url[] = $img_name;
+            $max_media_count++;
+          } else {
+            break;
+          }
+        }
+        if (count(Auth::user()->media) > 0) {
+          foreach (Auth::user()->media as $user_media) {
+            $path = public_path(sprintf("images/users/%s/%s", Auth::user()->id, $user_media));
+            if (File::exists($path)) {
+              File::delete($path);
+            }
+          }
         }
         $data['media'] = $image_url;
       }

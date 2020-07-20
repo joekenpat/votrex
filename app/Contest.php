@@ -15,7 +15,7 @@ class Contest extends Model
     public $incrementing = false;
 
   protected $fillable = [
-    'title', 'reg_fee','vote_fee',
+    'title', 'minimum_vote','vote_fee',
     'image',
     'status','started_at','ended_at',
   ];
@@ -49,10 +49,10 @@ class Contest extends Model
     return $this->belongsToMany(User::class,  'contest_user', 'contest_id','user_id');
   }
 
-  // public function votes()
-  // {
-  //   return $this->hasManyThrough(Vote::class ,User::class);
-  // }
+  public function votes()
+  {
+    return $this->hasMany(Vote::class, 'contest_id');
+  }
 
   public function is_active()
   {

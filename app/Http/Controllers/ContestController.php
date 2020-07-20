@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class ContestController extends Controller
@@ -27,32 +28,60 @@ class ContestController extends Controller
    */
   public function index(Request $request)
   {
-    $sort_type = $request->filled('sort_type') ? $request->sort_type : 'asc';
-    $result_count = $request->filled('result_count') ? $request->result_count : 10;
+    if (Auth::check() && Auth::user()->is_admin()) {
+      $sort_type = $request->filled('sort_type') ? $request->sort_type : 'asc';
+      $result_count = $request->filled('result_count') ? $request->result_count : 10;
 
-    $contest_sort_type = function () use ($sort_type) {
-      $contest_sort_type_map = ["asc", 'desc'];
-      if (in_array($sort_type, $contest_sort_type_map)) {
-        return $sort_type;
-      } else {
-        return 'asc';
-      }
-    };
+      $contest_sort_type = function () use ($sort_type) {
+        $contest_sort_type_map = ["asc", 'desc'];
+        if (in_array($sort_type, $contest_sort_type_map)) {
+          return $sort_type;
+        } else {
+          return 'asc';
+        }
+      };
 
-    $item_result_count = function () use ($result_count) {
-      if (in_array($result_count, [10, 25, 50, 100])) {
-        return $result_count;
-      } else {
-        return 10;
-      }
-    };
+      $item_result_count = function () use ($result_count) {
+        if (in_array($result_count, [10, 25, 50, 100])) {
+          return $result_count;
+        } else {
+          return 10;
+        }
+      };
 
-    $contests = Contest::
-      // with('votes')
-      orderBy('created_at', $contest_sort_type())
-      ->paginate($item_result_count());
-    // dd($contests);
-    return view('contest.index', ['contests' => $contests]);
+      $contests = Contest::
+        // with('votes')
+        orderBy('created_at', $contest_sort_type())
+        ->paginate($item_result_count());
+      // dd($contests);
+      return view('contest.index', ['contests' => $contests]);
+    } else {
+      $sort_type = $request->filled('sort_type') ? $request->sort_type : 'asc';
+      $result_count = $request->filled('result_count') ? $request->result_count : 10;
+
+      $contest_sort_type = function () use ($sort_type) {
+        $contest_sort_type_map = ["asc", 'desc'];
+        if (in_array($sort_type, $contest_sort_type_map)) {
+          return $sort_type;
+        } else {
+          return 'asc';
+        }
+      };
+
+      $item_result_count = function () use ($result_count) {
+        if (in_array($result_count, [10, 25, 50, 100])) {
+          return $result_count;
+        } else {
+          return 10;
+        }
+      };
+
+      $contests = Contest::where('ended_at', '>', now())
+        ->orderBy('created_at', $contest_sort_type())
+        ->paginate($item_result_count());
+      // dd($contests);
+      return view('contest.index', ['contests' => $contests]);
+    }
   }
 
 
@@ -94,16 +123,16 @@ class ContestController extends Controller
     }
     $findable = $request->input('findable');
     try {
-      $contest = Contest::where('id',$contest_id)->firstOrFail();
-      $contestant_count = $contest->contestants()->where('first_name','LIKE', "%{$findable}%")
-      ->orwhere('last_name','LIKE', "%{$findable}%")
-      ->orwhere('middle_name','LIKE', "%{$findable}%")->count();
-      $contestants = $contest->contestants()->where('first_name','LIKE', "%{$findable}%")
-      ->orwhere('last_name','LIKE', "%{$findable}%")
-      ->orwhere('middle_name','LIKE', "%{$findable}%")->paginate(10);
-      if($contestant_count == 0){
-        return redirect()->route('list_contest_contestant',['contest_id' => $contest])->with('info','No contestant in this contest matched your search.');
-      }else{
+      $contest = Contest::where('id', $contest_id)->firstOrFail();
+      $contestant_count = $contest->contestants()->where('first_name', 'LIKE', "%{$findable}%")
+        ->orwhere('last_name', 'LIKE', "%{$findable}%")
+        ->orwhere('middle_name', 'LIKE', "%{$findable}%")->count();
+      $contestants = $contest->contestants()->where('first_name', 'LIKE', "%{$findable}%")
+        ->orwhere('last_name', 'LIKE', "%{$findable}%")
+        ->orwhere('middle_name', 'LIKE', "%{$findable}%")->paginate(10);
+      if ($contestant_count == 0) {
+        return redirect()->route('list_contest_contestant', ['contest_id' => $contest])->with('info', 'No contestant in this contest matched your search.');
+      } else {
         return view('contestant.index', ['contest' => $contest, 'contestants' => $contestants]);
       }
     } catch (ModelNotFoundException $mnt) {
@@ -134,7 +163,7 @@ class ContestController extends Controller
   {
     $validator = Validator::make($request->all(), [
       'title' => 'required|string|min:5|max:250|',
-      'reg_fee' => 'nullable|numeric|min:0|max:100000',
+      'minimum_vote' => 'nullable|numeric|min:0|max:100000',
       'vote_fee' => 'nullable|numeric|min:0|max:100000',
       'started_at' => 'required|date|',
       'ended_at' => 'required|date|',
@@ -207,7 +236,7 @@ class ContestController extends Controller
     $validator = Validator::make($request->all(), [
       'title' => 'required|string|min:5|max:250|',
       'reg_fee' => 'nullable|numeric|min:0|max:100000',
-      'vote_fee' => 'nullable|numeric|min:0|max:100000',
+      'minimum_vote' => 'nullable|numeric|min:0|max:100000',
       'started_at' => 'required|date|',
       'ended_at' => 'required|date|',
       'image' => 'file|image|mimes:jpeg,png,gif,jpg|max:2048',
@@ -228,6 +257,12 @@ class ContestController extends Controller
         $destination_path = public_path(sprintf("images/contest/%s", $updateable_contest->id));
         $img->move($destination_path, $img_name);
         $data['image'] = $img_name;
+        if ($updateable_contest->image != null) {
+          $path = public_path(sprintf("images/users/%s/%s", $updateable_contest->id, $updateable_contest->image));
+          if (File::exists($path)) {
+            File::delete($path);
+          }
+        }
       }
       $updateable_contest->update($data);
       return redirect()->route('admin_list_contest')->with('success', 'Contest Updated');
@@ -239,12 +274,30 @@ class ContestController extends Controller
   /**
    * Remove the specified resource from storage.
    *
-   * @param  \App\Contest  $contest
+   * @param  \App\Contest  $contest_id
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Contest $contest)
+  public function destroy($contest_id)
   {
-    //
+    try {
+      $contest = Contest::where('id', $contest_id)->firstOrFail();
+      if ($contest->is_active()) {
+        return redirect()->route('admin_list_contest')->with('info', 'Sorry an Active Contest with contestants cannot be Deleted');
+      }
+      $contest->votes()->delete();
+      $contest->contestants()->detach();
+      if ($contest->image != null) {
+        if (File::isDirectory(sprintf("images/contest/%s/", $contest->id))) {
+          File::deleteDirectory(sprintf("images/contest/%s/", $contest->id));
+        }
+      }
+      $contest->delete();
+      return redirect()->route('admin_list_contest')->with('success', 'Contest Deleted');
+    } catch (ModelNotFoundException $mnt) {
+      return back()->with('error', 'Contest not found');
+    } catch (\Exception $e) {
+      return back()->with('error', $e->getMessage())->withInput();
+    }
   }
 
   /**

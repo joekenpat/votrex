@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Your Profile')
 @section('content')
 <div class="uk-container" style="padding-top: 5% ;padding-bottom:10px ;">
   <div class="uk-card uk-card-default my-card uk-margin-bottom">
@@ -43,19 +43,21 @@
 
   @if(count(Auth()->user()->media)> 0)
 
-  <div class="uk-card uk-card-default my-card uk-margin-top">
+  <div class="uk-card uk-card-default my-card uk-margin-top uk-margin-top">
     <div class="uk-card-header">
       <div class="uk-width-expand">
-        <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">Your Media Gallery</b></h3>
+      <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">Your Media Gallery</b></h3>
       </div>
     </div>
     <div class="uk-card-body">
-      <div class="uk-child-width-1-5@m k-child-width-1-1@m uk-grid-small  " uk-grid uk-lightbox="animation: scale">
+      <div class="uk-child-width-1-1@m uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-5@l uk-grid-collapse"
+        uk-grid uk-lightbox="animation: scale">
         @foreach (Auth()->user()->media as $img)
         <div>
-          <a class="uk-inline ph" href="{{asset(sprintf("images/users/%s/media/%s",Auth()->user()->id, $img))}}"
+          <a class="uk-inline ph" href="{{asset(sprintf("images/users/%s/%s",Auth()->user()->id, $img))}}"
             data-caption="Caption 1">
-            <img src="{{asset(sprintf("images/users/%s/media/%s",Auth()->user()->id, $img))}}" alt="">
+            <img class="uk-width-1-1" src="{{asset(sprintf("images/users/%s/%s",Auth()->user()->id, $img))}}"
+              style="max-height:200px; object-fit:cover;" alt="">
           </a>
         </div>
         @endforeach

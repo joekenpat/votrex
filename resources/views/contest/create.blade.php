@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Add Contest')
 @section('content')
 <div class="uk-container">
   <div class="content-user">
@@ -26,13 +26,13 @@
                 </div>
               </div>
               <div class="uk-width-1-1 uk-width-1-2@s">
-                <label for="reg_fee" class="uk-form-label form-label">
-                  {{ __('Reg Fee') }}
+                <label for="minimum_vote" class="uk-form-label form-label">
+                  {{ __('Minimum Vote') }}
                 </label>
                 <div class="uk-form-control">
-                  <input class="uk-input @error('reg_fee') uk-form-danger @enderror" id="reg_fee" name="reg_fee"
-                    type="number" min="0" value="{{ old('reg_fee')?:0 }}" required>
-                  @error('reg_fee')
+                  <input class="uk-input @error('minimum_vote') uk-form-danger @enderror" id="minimum_vote" name="minimum_vote"
+                    type="number" min="0" value="{{ old('minimum_vote')?:0 }}" required>
+                  @error('minimum_vote')
                   <span class="uk-text-danger">{{ $message }}</span>
                   @enderror
                 </div>

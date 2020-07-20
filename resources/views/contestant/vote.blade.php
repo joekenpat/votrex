@@ -1,11 +1,11 @@
 @extends('layouts.app')
-
+@section('title', 'Vote for '.$contestant->get_full_name())
 @section('content')
 <div class="uk-container uk-margin-bottom" style="padding-top: 5% ;padding-bottom:10px ;">
   <div class="uk-card uk-card-default my-card uk-margin-bottom">
     <div class="uk-card-header">
       <div class="uk-width-expand">
-        <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">Contestant Details</b></h3>
+        <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">{{Auth()->user()->first_name}} Details</b></h3>
       </div>
     </div>
     <div class="uk-card-body">
@@ -46,7 +46,7 @@
   <div class="uk-card uk-card-default my-card uk-margin-top uk-margin-top">
     <div class="uk-card-header">
       <div class="uk-width-expand">
-        <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">Contestant Media Gallery</b></h3>
+      <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">{{$contestant->first_name}} Media Gallery</b></h3>
       </div>
     </div>
     <div class="uk-card-body">
@@ -65,7 +65,7 @@
     </div>
   </div>
   @endif
-
+  @if ($contest->is_active())
   <div class="uk-card uk-card-default my-card uk-margin-top">
     <div class="uk-card-header">
       <div class="uk-width-expand">
@@ -74,13 +74,11 @@
       </div>
     </div>
     <div class="uk-card-body">
-      <form class="uk-grid-small content" method="POST"
-        action="{{route('pay')}}" uk-grid>
+      <form class="uk-grid-small content" id="vote_form" method="POST" action="{{route('pay')}}" uk-grid>
         @csrf
         <div class="uk-width-1-1 uk-width-1-2@s">
           <label class="uk-form-label form-label" for="first_name">Your First Name</label>
-          <input class="uk-input" type="text" id="first_name" name="first_name" required
-            autocomplete="given-name">
+          <input class="uk-input" type="text" id="first_name" name="first_name" required autocomplete="given-name">
         </div>
         <div class="uk-width-1-1 uk-width-1-2@s">
           <label class="uk-form-label form-label" for="last_name">Your Last Name</label>
@@ -92,8 +90,8 @@
         </div>
         <div class="uk-width-1-1 uk-width-1-2@s">
           <label class="uk-form-label form-label" for="quantity">Number of Vote</label>
-          <input class="uk-input" type="number" id="xquantity" value="1" name="xquantity" min="1"
-            onkeyup="calc_vote_amt()" onchange="calc_vote_amt()">
+          <input class="uk-input" type="number" id="xquantity" value="1" name="xquantity"
+            min="{{$contest->minimum_vote}}" onkeyup="calc_vote_amt()" onchange="calc_vote_amt()">
         </div>
         <input type="hidden" name="quantity" value="1">
         <input type="hidden" name="contest_id" value="{{$contest->id}}">
@@ -107,6 +105,7 @@
 
     </div>
   </div>
+  @endif
 
 </div>
 </div>

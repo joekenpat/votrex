@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Edit Profile Details')
 @section('content')
 @if (Auth::user()->is_admin())
 <div class="uk-container">
@@ -329,7 +329,7 @@
               <div class="uk-width-1-1" uk-form-custom="target: true">
                 <label class="uk-form-label form-label" for="form-stacked-text ">Select your Media Images (5)
                   Max</label>
-                <input type="file" multiple accept=".jpeg,.gif,.jpg,.png" id="media" name="media[]">
+                <input type="file" onchange="val_file_count(this)" multiple accept=".jpeg,.gif,.jpg,.png" id="media" name="media[]">
                 <input class="uk-input @error('last_name') uk-form-danger @enderror uk-width-1-1" type="text"
                   placeholder="Select Media image" multiple accept=".jpeg,.gif,.jpg,.png" disabled>
               </div>
@@ -390,6 +390,14 @@
         }
       }
     });
+  }
+
+  function val_file_count(media_selector){
+    if(media_selector.files.length > 5){
+      media_selector.value=''
+      UIkit.modal.alert('Maximum Of 5 images allowed,Please Kindly reselect again.');
+      media_selector.preventDefault();
+    }
   }
 </script>
 @endpush

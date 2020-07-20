@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Edit school: '.$school->name)
 @section('content')
 <div class="uk-container">
   <div class="content-user">

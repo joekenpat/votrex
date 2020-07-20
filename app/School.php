@@ -36,4 +36,10 @@ class School extends Model
   {
     return $this->hasMany(User::class,  'sch_id');
   }
+
+  public function detach_all_users()
+  {
+    $this->users()->update(['sch_id'=>null]);
+  }
 }
+

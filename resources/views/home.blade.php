@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Your Dashboard')
 @section('content')
 @if (Auth::user()->is_admin())
 <div class="uk-container uk-padding-small">

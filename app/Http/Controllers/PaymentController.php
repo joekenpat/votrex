@@ -26,10 +26,6 @@ class PaymentController extends Controller
   public function redirectToGateway(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'first_name' => 'required|alpha|max:25|min:2|',
-      'last_name' => 'required|alpha|max:25|min:2|',
-      'email' => 'required|email|max:150|min:5|',
-      'xquantity' => 'numeric|min:1|',
       'contest_id' => 'required|uuid|exists:contests,id|',
       'contestant_id' => 'required|uuid|exists:users,id|',
     ]);
@@ -43,6 +39,22 @@ class PaymentController extends Controller
       return back()->with('error', 'Contest not found');
     } catch (\Exception $e) {
       return back()->with('error', $e->getMessage());
+    }
+    $validator = Validator::make($request->all(), [
+      'first_name' => 'required|alpha|max:25|min:2|',
+      'last_name' => 'required|alpha|max:25|min:2|',
+      'email' => 'required|email|max:150|min:5|',
+      'xquantity' => "numeric|min:{$contest->minimum_vote}|",
+    ],[
+      'xquantity.min'=> "The quantity of vote must be greater or equal to: {$contest->minimum_vote}",
+      'first_name.required'=> "Your first name is Required!",
+      'first_name.alpha'=> "Only alphabets are allowed in your first name",
+      'last_name.required'=> "Your last name is Required!",
+      'last_name.alpha'=> "Only alphabets are allowed in your last name",
+    ]);
+    if ($validator->fails()) {
+      // dd($validator->errors());
+      return back()->withErrors($validator->errors())->withInput();
     }
     try {
       $contestant = User::where('id', $request->input('contestant_id'))->firstOrFail();
@@ -70,6 +82,7 @@ class PaymentController extends Controller
       $request->quantity = 1;
       $request->metadata = ['contestant_id' => $contestant->id, 'contest_id' => $contest->id,];
       $request->key = config('paystack.secretKey');
+      $request->callback_url = route('payment_callback');
     } catch (\Exception $e) {
       return back()->with('error', $e->getMessage())->withInput();
     }

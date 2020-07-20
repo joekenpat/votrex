@@ -140,11 +140,20 @@ class SchoolController extends Controller
   /**
    * Remove the specified resource from storage.
    *
-   * @param  \App\School  $school
+   * @param  \App\School  $school_id
    * @return \Illuminate\Http\Response
    */
-  public function destroy(School $school)
+  public function destroy($school_id)
   {
-    //
+    try {
+      $school = School::where('id', $school_id)->firstOrFail();
+      $school->detach_all_users();
+      $school->delete();
+      return redirect()->route('admin_list_school')->with('success', 'School Deleted');
+    } catch (ModelNotFoundException $mnt) {
+      return back()->with('error', 'School not found');
+    } catch (\Exception $e) {
+      return back()->with('error', $e->getMessage())->withInput();
+    }
   }
 }

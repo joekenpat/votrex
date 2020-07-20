@@ -72,6 +72,7 @@ Route::group(['prefix' => 'contest', 'middleware' => ['auth', 'is_admin']], func
   Route::post('/save', 'ContestController@store')->name('admin_save_contest');
   Route::get('/edit/{contest_id}', 'ContestController@edit')->name('admin_edit_contest');
   Route::post('/update/{contest_id}', 'ContestController@update')->name('admin_update_contest');
+  Route::get('/delete/{contest_id}', 'ContestController@destroy')->name('admin_delete_contest');
 });
 
 /* admin route for school manipulation */
@@ -81,21 +82,20 @@ Route::group(['prefix' => 'school', 'middleware' => ['auth', 'is_admin']], funct
   Route::post('/save', 'SchoolController@store')->name('admin_save_school');
   Route::get('/edit/{school_id}', 'SchoolController@edit')->name('admin_edit_school');
   Route::post('/update/{school_id}', 'SchoolController@update')->name('admin_update_school');
+  Route::get('/delete/{school_id}', 'SchoolController@destroy')->name('admin_delete_school');
 });
 
 
 /* paystack routes */
 Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
-Route::get('/payment/callback', 'PaymentController@handleGatewayCallback');
+Route::get('/payment/callback', 'PaymentController@handleGatewayCallback')->name('payment_callback');
 
 /* guest routes */
 Route::get('/', function () {
-  if(Auth::check() && Auth::user()->is_admin()){
+  if (Auth::check() && Auth::user()->is_admin()) {
     return redirect()->route('contestant_view_profile');
   }
   return redirect()->route('list_contest');
 });
 Route::get('vote/list', 'VoteController@index')->name('list_vote');
 Route::get('/contestant/{contestant_id}', 'ContestantController@visit_contestant')->name('visit_contestant');
-
-
