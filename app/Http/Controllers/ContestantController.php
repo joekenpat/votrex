@@ -160,7 +160,7 @@ class ContestantController extends Controller
       if ($request->hasFile('avatar')) {
         $avatar = $request->file('avatar');
         $img_ext = $avatar->getClientOriginalExtension();
-        $img_name = sprintf("CAVATAR_%s.%s", Auth::user()->id, $img_ext);
+        $img_name = sprintf("CAVATAR_%s.%s", bin2hex(random_bytes(15)), $img_ext);
         $destination_path = public_path(sprintf("images/users/%s", Auth::user()->id));
         $avatar->move($destination_path, $img_name);
         $data['avatar'] = $img_name;
