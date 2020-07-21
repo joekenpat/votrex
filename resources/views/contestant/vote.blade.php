@@ -110,7 +110,7 @@
         <input type="hidden" name="contestant_id" value="{{$contestant->id}}">
         <div class="uk-width-2-3 uk-align-center uk-animation-toggle" tabindex="0">
           <button type="submit" class="uk-button uk-width-1-1" style="background-color:#3D9FB9; color:white;">
-            <b>Vote</b> N<span id="vote_amount">{{$contest->vote_fee}}</span></button>
+            <b>Vote</b> N<span id="vote_amount">{{$contest->vote_fee * $contest->minimum_vote}}</span></button>
         </div>
 
       </form>
