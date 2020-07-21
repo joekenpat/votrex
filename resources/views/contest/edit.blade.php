@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Edit Contest: '.$contest->title)
 @section('content')
 <div class="uk-container">
   <div class="content-user">
@@ -31,14 +31,14 @@
               </div>
             </div>
             <div class="uk-width-1-1 uk-width-1-2@s">
-              <label for="reg_fee" class="uk-form-label form-label">
-                {{ __('Reg Fee') }}
+              <label for="minimum_vote" class="uk-form-label form-label">
+                {{ __('Minimum vote') }}
               </label>
               <div class="uk-form-control">
-                <input class="uk-input @error('reg_fee') uk-form-danger @enderror" min="0" id="reg_fee"
-                  name="reg_fee" type="text" value="{{ old('reg_fee') != null||''? old('reg_fee'): $contest->reg_fee }}"
+                <input class="uk-input @error('minimum_vote') uk-form-danger @enderror" min="0" id="minimum_vote"
+                  name="minimum_vote" type="text" value="{{ old('minimum_vote') != null||''? old('minimum_vote'): floor($contest->minimum_vote) }}"
                   required>
-                @error('reg_fee')
+                @error('minimum_vote')
                 <span class="uk-text-danger">{{ $message }}</span>
                 @enderror
               </div>
@@ -50,7 +50,7 @@
               <div class="uk-form-control">
                 <input class="uk-input @error('vote_fee') uk-form-danger @enderror" min="0" id="vote_fee"
                   name="vote_fee" type="text"
-                  value="{{ old('vote_fee') != null||''? old('vote_fee'): $contest->vote_fee }}" required>
+                  value="{{ old('vote_fee') != null||''? old('vote_fee'): floor($contest->vote_fee) }}" required>
                 @error('vote_fee')
                 <span class="uk-text-danger">{{ $message }}</span>
                 @enderror
@@ -62,7 +62,7 @@
               </label>
               <div class="uk-form-control">
                 <input class="uk-input @error('started_at') uk-form-danger @enderror" id="started_at" name="started_at"
-                  type="text"
+                  type="date"
                   value="{{ old('started_at') != null||''? old('started_at'): $contest->started_at->format('Y-m-d') }}"
                   required>
                 @error('started_at')
@@ -76,7 +76,7 @@
               </label>
               <div class="uk-form-control">
                 <input class="uk-input @error('ended_at') uk-form-danger @enderror" id="ended_at" name="ended_at"
-                  type="text"
+                  type="date"
                   value="{{ old('ended_at') != null||''? old('ended_at'): $contest->ended_at->format('Y-m-d') }}"
                   required>
                 @error('ended_at')

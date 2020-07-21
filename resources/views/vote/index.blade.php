@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'List of Votes')
 @section('content')
 @if(Auth::user()->is_admin())
 <div class="uk-container">

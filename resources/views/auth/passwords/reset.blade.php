@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Password Reset')
 @section('content')
     <div class="uk-section uk-section-small uk-section-muted uk-flex uk-flex-center">
         <div class="uk-card uk-card-default uk-card-body uk-width-large">

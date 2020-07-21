@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Login now')
 @section('content')
 <div class="uk-container uk-padding-small content1">
   <div uk-grid>

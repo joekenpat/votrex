@@ -26,10 +26,6 @@ class PaymentController extends Controller
   public function redirectToGateway(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'first_name' => 'required|alpha|max:25|min:2|',
-      'last_name' => 'required|alpha|max:25|min:2|',
-      'email' => 'required|email|max:150|min:5|',
-      'xquantity' => 'numeric|min:1|',
       'contest_id' => 'required|uuid|exists:contests,id|',
       'contestant_id' => 'required|uuid|exists:users,id|',
     ]);
@@ -43,6 +39,22 @@ class PaymentController extends Controller
       return back()->with('error', 'Contest not found');
     } catch (\Exception $e) {
       return back()->with('error', $e->getMessage());
+    }
+    $validator = Validator::make($request->all(), [
+      'first_name' => 'required|alpha|max:25|min:2|',
+      'last_name' => 'required|alpha|max:25|min:2|',
+      'email' => 'required|email|max:150|min:5|',
+      'xquantity' => "numeric|min:{$contest->minimum_vote}|",
+    ],[
+      'xquantity.min'=> "The quantity of vote must be greater or equal to: {$contest->minimum_vote}",
+      'first_name.required'=> "Your first name is Required!",
+      'first_name.alpha'=> "Only alphabets are allowed in your first name",
+      'last_name.required'=> "Your last name is Required!",
+      'last_name.alpha'=> "Only alphabets are allowed in your last name",
+    ]);
+    if ($validator->fails()) {
+      // dd($validator->errors());
+      return back()->withErrors($validator->errors())->withInput();
     }
     try {
       $contestant = User::where('id', $request->input('contestant_id'))->firstOrFail();
@@ -70,6 +82,7 @@ class PaymentController extends Controller
       $request->quantity = 1;
       $request->metadata = ['contestant_id' => $contestant->id, 'contest_id' => $contest->id,];
       $request->key = config('paystack.secretKey');
+      $request->callback_url = route('payment_callback');
     } catch (\Exception $e) {
       return back()->with('error', $e->getMessage())->withInput();
     }
@@ -92,9 +105,9 @@ class PaymentController extends Controller
     if ($paymentDetails['data']['status'] === "success") {
       $valid_vote->status =  'valid';
       $valid_vote->update();
-      // $valid_vote->contestant->notify(new NewVote($valid_vote->contestant,$valid_vote));
-      // $admin  = User::where('role','admin')->firstOrFail();
-      // $admin->notify(new NewVote($admin,$valid_vote));
+      $valid_vote->contestant->notify(new NewVote($valid_vote->contestant,$valid_vote));
+      $admin  = User::where('role','admin')->firstOrFail();
+      $admin->notify(new NewVote($admin,$valid_vote));
       return redirect()->route('visit_contest_contestant', ['contest_id' => $valid_vote->contest_id, 'contestant_id' => $valid_vote->user_id])->with('success', sprintf('Your Vote for %s was Successful!', $valid_vote->contestant->get_full_name()));
     } else {
       return redirect()->route('visit_contest_contestant', ['contest_id' => $valid_vote->contest_id, 'contestant_id' => $valid_vote->user_id])->with('error', sprintf('Your Vote for %s was unsuccessful!', $valid_vote->contestant->get_full_name()));

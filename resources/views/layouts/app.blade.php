@@ -113,8 +113,9 @@
         <div class="uk-container">
           <div class="uk-navbar" data-uk-navbar>
             <div class="uk-navbar-left">
-              <a class="uk-navbar-item uk-logo" href="/">{{ config('app.name', 'FORSI') }}</a>
-
+              <a class="uk-navbar-item uk-logo" href="/">
+              <img src="{{asset('images/misc/default_logo.png')}}" width="50px" height="50px">
+              </a>
             </div>
             <div class="uk-navbar-right">
               <ul class="uk-navbar-nav">

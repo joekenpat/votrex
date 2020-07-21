@@ -1,14 +1,14 @@
 @extends('layouts.app')
-
+@section('title', 'Contestants for: '.$contest->title.'contest')
 @section('content')
 <div class="uk-text-center">
-  <form>
+<form method="POST" action="{{ route('find_contestant',['contest_id'=>$contest->id]) }}">
+    @csrf
     <div class="uk-margin-top ">
       <div class="uk-inline">
-        <button style="background-color:#213176;  border-radius:30px ; border: none; "
-          class="uk-form-icon uk-form-icon-flip remove-highlight" type="button"><i class="mdi  mdi-account-search"
-            style="color:white; font-size: 30px;"></i></button>
-        <input class="uk-input" type="text" style="border-radius:18px ;">
+        <button type="submit" style="background-color:#213176;  border-radius:30px ; border: none; "
+          class="uk-form-icon uk-form-icon-flip remove-highlight" type="button"><i uk-icon="search"></i></button>
+        <input class="uk-input" id="findable" name="findable" type="text" style="border-radius:18px ;">
       </div>
     </div>
   </form>
@@ -31,10 +31,18 @@
             <p class="my-card-text  uk-margin-left"><b style="color:#EF7D11"><label>Contestant No:</label>
                 {{($loop->iteration * $contestants->currentPage())}}</b></p>
           </div>
+          @if ($contest->is_active())
           <a href="{{route('visit_contest_contestant',['contest_id'=>$contest->id,'contestant_id'=>$contestant->id])}}"
             class="uk-button uk-button-small" style="background-color:#3D9FB9; border-radius: 10px; box-shadow: 0px 0px 10px 0px black;
                     color:white;">
             <b>Vote</b></a>
+          @else
+          <span class="uk-label uk-label-warning">CLOSED</span>
+          <a href="{{route('visit_contest_contestant',['contest_id'=>$contest->id,'contestant_id'=>$contestant->id])}}"
+            class="uk-button uk-button-small" style="background-color:#3D9FB9; border-radius: 10px; box-shadow: 0px 0px 10px 0px black;
+                    color:white;">
+            <b>View Contestant</b></a>
+          @endif
         </div>
       </div>
     </div>

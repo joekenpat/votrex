@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'List of Schools')
 @section('content')
 @if(Auth::user()->is_admin())
 <div class="uk-container">
@@ -25,10 +25,8 @@
             <td>{{$school->state}}</td>
             <td>
               <div>
-                <a href="{{ route('admin_edit_school',["school_id"=>$school->id]) }}" class="uk-button uk-button-small"
-                  uk-tooltip="Edit School">
-                  Edit
-                </a>
+                <a onclick="confirm_action(event, this)"  href="{{route('admin_edit_school',['school_id'=>$school->id])}}" style="color:blue" uk-tooltip="Edit School" class="uk-icon-link uk-margin-small-right" uk-icon="icon:file-edit; ratio:1.3"></span></a>
+                <a onclick="confirm_action(event, this)"  href="{{route('admin_delete_school',['school_id'=>$school->id])}}" style="color:red" uk-tooltip="Delete School" class="uk-icon-link" uk-icon="icon:trash; ratio:1.3"></span></a>
               </div>
             </td>
           </tr>
@@ -47,3 +45,19 @@
 </div>
 @endif
 @endsection
+@push('bottom_scripts')
+<script>
+  function confirm_action(e,t){
+  e.preventDefault();
+  e.target.blur();
+  var self_link = t.getAttribute('href')
+  var self_action = t.getAttribute('uk-tooltip')
+  UIkit.modal.confirm(`Do you want to ${self_action}!`).then(function () {
+      e.isDefaultPrevented = function(){ return false; }
+    // retrigger with the exactly same event data
+    location.href = self_link
+  }, function () {
+  });
+  }
+</script>
+@endpush

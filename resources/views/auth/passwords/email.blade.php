@@ -1,9 +1,9 @@
 @extends('layouts.app')
-
+@section('title', 'Request Password Reset')
 @section('content')
     <div class="uk-section uk-section-small uk-section-muted uk-flex uk-flex-center">
         <div class="uk-card uk-card-default uk-card-body uk-width-large">
-            <h2 class="uk-card-title">Reset Password</h2>
+            <h2 class="uk-card-title">Send Password Reset Link</h2>
             <form method="POST" action="{{ route('password.email') }}" class="uk-form-stacked">
                 @csrf
                 @if (session('status'))

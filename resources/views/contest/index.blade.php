@@ -11,7 +11,7 @@
           <tr>
             <th>#</th>
             <th>TITLE</th>
-            <th>REG FEE</th>
+            <th>MIN VOTE</th>
             <th>VOTE FEE</th>
             <th>STARTS</th>
             <th>ENDS</th>
@@ -24,21 +24,21 @@
           <tr>
             <td>{{$loop->iteration}}</td>
             <td>{{$contest->title}}</td>
-            <td>{{$contest->reg_fee != 0?'N'.$contest->reg_fee:"Free"}}</td>
-            <td>{{$contest->vote_fee != 0?'N'.$contest->vote_fee:"Free"}}</td>
+            <td>{{floor($contest->minimum_vote)}}</td>
+            <td>{{$contest->vote_fee != 0?'N'.floor($contest->vote_fee):"Free"}}</td>
             <td>{{$contest->started_at->format('Y-m-d')}}</td>
-            <td>{{$contest->ended_at->format('Y-m-d')}}</td>
+            <td>
+              @if($contest->is_active())
+              {{$contest->ended_at->format('Y-m-d')}}
+              @else
+              <span class="uk-label uk-label-warning">CLOSED</span>
+              @endif
+            </td>
             <td>{{$contest->contestants->count()}}</td>
             <td>
               <div>
-                {{-- <a href="{{route('delete_contest',['contest_id'=>$contest_id])}}" class="uk-button uk-button-small"
-                style="background-color:red">
-                <i class="mdi  mdi-trash-can" uk-tooltip="Delete" style="color:white; font-size: 15px;"></i>
-                </a> --}}
-                <a href="{{route('admin_edit_contest',['contest_id'=>$contest->id])}}" class="uk-button uk-button-small"
-                  uk-tooltip="Edit Contest">
-                  Edit
-                </a>
+                <a onclick="confirm_action(event, this)" href="{{route('admin_edit_contest',['contest_id'=>$contest->id])}}" style="color:blue" uk-tooltip="Edit Contest" class="uk-icon-link uk-margin-small-right" uk-icon="icon:file-edit; ratio:1.3"></span></a>
+                <a onclick="confirm_action(event, this)" href="{{route('admin_delete_contest',['contest_id'=>$contest->id])}}" style="color:red" uk-tooltip="Delete Contest" class="uk-icon-link" uk-icon="icon:trash; ratio:1.3"></span></a>
               </div>
             </td>
           </tr>
@@ -46,6 +46,7 @@
         </tbody>
       </table>
     </div>
+
     <!--=======================-->
     @if ($contests->hasPages())
     <div class="uk-text-center uk-card-footer">
@@ -55,6 +56,22 @@
 
   </div>
 </div>
+@push('bottom_scripts')
+<script>
+  function confirm_action(e,t){
+  e.preventDefault();
+  e.target.blur();
+  var self_link = t.getAttribute('href')
+  var self_action = t.getAttribute('uk-tooltip')
+  UIkit.modal.confirm(`Do you want to ${self_action}!`).then(function () {
+      e.isDefaultPrevented = function(){ return false; }
+    // retrigger with the exactly same event data
+    location.href = self_link
+  }, function () {
+  });
+  }
+</script>
+@endpush
 @else
 <div class="uk-container uk-margin uk-margin-top">
   <div class="uk-grid-small" uk-grid>
@@ -80,25 +97,25 @@
               <b>View Contestants</b>
             </a>
             @if($contest->is_active())
-              @auth
-                @if (Auth::user()->contests()->where('contest_id', $contest->id)->exists())
-                  <span class="uk-label uk-label-success">JOINED</span>
-                @else
-                  <a href="{{ route('join_contest',['contest_id'=>$contest->id]) }}"
-                    class="uk-button uk-button-small uk-width-1-1 uk-margin-small" style="background-color:#3D9FB9; border-radius: 5px; box-shadow: 0px 0px 3px 0px black;
-                                    color:white;">
-                    <b>Join For {{$contest->reg_fee != 0?'N'.$contest->reg_fee:"Free"}}</b>
-                @endif
-              @else
-                <a href="{{ route('join_contest',['contest_id'=>$contest->id]) }}"
-                  class="uk-button uk-button-small uk-width-1-1 uk-margin-small" style="background-color:#3D9FB9; border-radius: 5px; box-shadow: 0px 0px 3px 0px black;
-                                  color:white;">
-                  <b>Join For {{$contest->reg_fee != 0?'N'.$contest->reg_fee:"Free"}}</b>
-              @endif
+            @auth
+            @if (Auth::user()->contests()->where('contest_id', $contest->id)->exists())
+            <span class="uk-label uk-label-success">JOINED</span>
             @else
+            <a href="{{ route('join_contest',['contest_id'=>$contest->id]) }}"
+              class="uk-button uk-button-small uk-width-1-1 uk-margin-small" style="background-color:#3D9FB9; border-radius: 5px; box-shadow: 0px 0px 3px 0px black;
+                                    color:white;">
+              <b>Join this Contest</b>
+              @endif
+              @else
+              <a href="{{ route('join_contest',['contest_id'=>$contest->id]) }}"
+                class="uk-button uk-button-small uk-width-1-1 uk-margin-small" style="background-color:#3D9FB9; border-radius: 5px; box-shadow: 0px 0px 3px 0px black;
+                                  color:white;">
+                <b>Join this Contest</b>
+                @endif
+                @else
                 <span class="uk-label uk-label-warning">CLOSED</span>
-            @endif
-            </a>
+                @endif
+              </a>
           </div>
         </div>
       </div>
