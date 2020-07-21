@@ -20,7 +20,7 @@
               style="color:#EF7D11">{{Auth()->user()->get_full_name()}}</b>
           </h2>
           <div class="uk-grid-divider uk-grid-collapse" uk-grid>
-            <div class="uk-width-1-1 uk-width-1-2@m">
+            <div class="uk-width-1-1">
               <ul class="contestant-details uk-padding-remove-left">
                 <li><b>SEX: </b>{{Auth()->user()->gender}}</li>
                 <li><b>AGE: </b>{{Auth()->user()->age}}</li>
@@ -30,16 +30,26 @@
                 <li><b>PHONE: </b>{{Auth()->user()->phone}}</li>
               </ul>
             </div>
-            <div class="uk-width-1-1 uk-width-1-2@m">
-              <ul class="contestant-details uk-padding-remove-left">
-                <li><b>BIO: </b>{{Auth()->user()->bio}}</li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  @if(Auth()->user()->bio != null || Auth()->user()->bio != "")
+
+  <div class="uk-card uk-card-default my-card uk-margin-top uk-margin-top">
+    <div class="uk-card-header">
+      <div class="uk-width-expand">
+        <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">{{Auth()->user()->first_name}}
+            Bio</b></h3>
+      </div>
+    </div>
+    <div class="uk-card-body">
+      {{Auth()->user()->bio}}
+    </div>
+  </div>
+  @endif
 
   @if(count(Auth()->user()->media)> 0)
 

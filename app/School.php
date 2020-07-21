@@ -39,7 +39,7 @@ class School extends Model
 
   public function detach_all_users()
   {
-    $this->users()->update(['sch_id'=>null]);
+    $this->users()->update(['sch_id'=>null,'sch_level'=>null,'sch_faculty'=>null]);
   }
 }
 

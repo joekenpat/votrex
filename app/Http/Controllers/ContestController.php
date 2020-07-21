@@ -247,9 +247,9 @@ class ContestController extends Controller
 
     try {
       $data = $request->all();
-      $data['image'] = null;
       $updateable_contest = Contest::where('id', $contest_id)->firstOrFail();
       if ($request->hasFile('image')) {
+        $data['image'] = null;
         //adding images
         $img = $request->file('image');
         $img_ext = $img->getClientOriginalExtension();

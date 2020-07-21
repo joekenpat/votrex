@@ -97,5 +97,5 @@ Route::get('/', function () {
   }
   return redirect()->route('list_contest');
 });
-Route::get('vote/list', 'VoteController@index')->name('list_vote');
+Route::get('vote/list', 'VoteController@index')->name('list_vote')->middleware('auth');
 Route::get('/contestant/{contestant_id}', 'ContestantController@visit_contestant')->name('visit_contestant');

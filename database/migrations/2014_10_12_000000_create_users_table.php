@@ -24,7 +24,6 @@ class CreateUsersTable extends Migration
           $table->enum('sch_level',['100','200','300','400','500','600','ND1','ND2','HND1','HND2'])->nullable()->default(null);
           $table->string('sch_faculty')->nullable()->default(null);
           $table->integer('age')->nullable()->default(null);
-          $table->string('bio')->nullable()->default(null);
           $table->enum('role', ['user', 'admin'])->default('user');
           $table->enum('gender', ['male', 'female']);
           $table->string('email')->unique();
@@ -34,6 +33,7 @@ class CreateUsersTable extends Migration
           $table->string('avatar')->nullable()->default(null);
           $table->ipAddress('last_ip');
           $table->rememberToken();
+          $table->string('bio',5000)->nullable()->default(null);
           $table->timestamp('last_login', 6)->nullable()->default(null);
           $table->timestamp('created_at', 6)->nullable()->default(null);
           $table->timestamp('updated_at', 6)->nullable()->default(null);

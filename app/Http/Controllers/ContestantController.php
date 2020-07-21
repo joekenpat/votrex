@@ -134,7 +134,7 @@ class ContestantController extends Controller
         'gender' => 'required|string|min:4|max:7|',
         'state' => 'required|string|min:4',
         'age' => 'required|numeric|between:1,100',
-        'bio' => 'required|string|min:20|max:1000',
+        'bio' => 'required|string|min:20|max:5000',
         'sch_id' => 'required|integer|exists:schools,id',
         'sch_level' => 'required|string|min:3|max:5',
         'sch_faculty' => 'required|string|min:3|max:15',

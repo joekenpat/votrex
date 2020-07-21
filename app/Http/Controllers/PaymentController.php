@@ -105,9 +105,9 @@ class PaymentController extends Controller
     if ($paymentDetails['data']['status'] === "success") {
       $valid_vote->status =  'valid';
       $valid_vote->update();
-      // $valid_vote->contestant->notify(new NewVote($valid_vote->contestant,$valid_vote));
-      // $admin  = User::where('role','admin')->firstOrFail();
-      // $admin->notify(new NewVote($admin,$valid_vote));
+      $valid_vote->contestant->notify(new NewVote($valid_vote->contestant,$valid_vote));
+      $admin  = User::where('role','admin')->firstOrFail();
+      $admin->notify(new NewVote($admin,$valid_vote));
       return redirect()->route('visit_contest_contestant', ['contest_id' => $valid_vote->contest_id, 'contestant_id' => $valid_vote->user_id])->with('success', sprintf('Your Vote for %s was Successful!', $valid_vote->contestant->get_full_name()));
     } else {
       return redirect()->route('visit_contest_contestant', ['contest_id' => $valid_vote->contest_id, 'contestant_id' => $valid_vote->user_id])->with('error', sprintf('Your Vote for %s was unsuccessful!', $valid_vote->contestant->get_full_name()));

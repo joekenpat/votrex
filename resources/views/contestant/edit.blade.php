@@ -122,7 +122,7 @@
             <div class="uk-width-1-2">
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="last_name">Last Name</label>
-                <input placeholder="Last Name"
+                <input onkeydown="return event.key != 'Enter';" placeholder="Last Name"
                   class="uk-input @error('last_name') uk-form-danger @enderror uk-form-width-large" type="text"
                   id="last_name" name="last_name" value="{{ old('last_name')?:Auth::User()->last_name }}" autofocus
                   required autocomplete="family-name">
@@ -135,7 +135,7 @@
             <div class="uk-width-1-2">
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="First Name">First Name</label>
-                <input placeholder="First name"
+                <input onkeydown="return event.key != 'Enter';" placeholder="First name"
                   class="uk-input @error('first_name') uk-form-danger @enderror uk-form-width-large" type="text"
                   id="first_name" name="first_name" value="{{ old('first_name')?:Auth::User()->first_name }}" required
                   autocomplete="given-name">
@@ -148,7 +148,7 @@
             <div class="uk-width-1-2">
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="middle_name">Middle Name</label>
-                <input placeholder="Middle Name"
+                <input onkeydown="return event.key != 'Enter';" placeholder="Middle Name"
                   class="uk-input @error('middle_name') uk-form-danger @enderror uk-form-width-large" type="text"
                   id="middle_name" name="middle_name" value="{{ old('middle_name')?:Auth::User()->middle_name }}"
                   autocomplete="additional-name">
@@ -161,7 +161,7 @@
             <div class="uk-width-1-2">
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="phone">Phone</label>
-                <input placeholder="Phone" class="uk-input @error('phone') uk-form-danger @enderror uk-form-width-large"
+                <input onkeydown="return event.key != 'Enter';" placeholder="Phone" class="uk-input @error('phone') uk-form-danger @enderror uk-form-width-large"
                   type="text" id="phone" name="phone" value="{{ old('phone')?:Auth::User()->phone }}" required
                   autocomplete="tel">
               </div>
@@ -174,7 +174,7 @@
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="gender">Gender</label>
                 <div class="uk-form-controls">
-                  <select class="uk-select @error('gender') uk-form-danger @enderror uk-form-width-large" id="gender"
+                  <select onkeydown="return event.key != 'Enter';" class="uk-select @error('gender') uk-form-danger @enderror uk-form-width-large" id="gender"
                     name="gender" autocomplete="sex">
                     <option value="">-- Gender --</option>
                     @foreach (['Male','Female'] as $gender)
@@ -196,7 +196,7 @@
             <div class="uk-width-1-2">
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="age">Age</label>
-                <input placeholder="Age" class="uk-input @error('age') uk-form-danger @enderror uk-form-width-large"
+                <input onkeydown="return event.key != 'Enter';" placeholder="Age" class="uk-input @error('age') uk-form-danger @enderror uk-form-width-large"
                   min="15" max="85" type="number" id="age" name="age" value="{{ old('age')?:Auth::User()->age }}">
               </div>
               @error('age')
@@ -206,7 +206,7 @@
             <div class="uk-width-1-1">
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="state">State of Origin</label>
-                <select class="uk-select @error('state') uk-form-danger @enderror uk-form-width-large" type="text"
+                <select onkeydown="return event.key != 'Enter';" class="uk-select @error('state') uk-form-danger @enderror uk-form-width-large" type="text"
                   id="state" name="state">
                   <option value="">-- State of Origin --</option>
                   @foreach (
@@ -266,7 +266,7 @@
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="sch_id">School</label>
                 <div class="uk-form-controls">
-                  <select class="uk-select @error('sch_id') uk-form-danger @enderror uk-form-width-large" id="sch_id"
+                  <select onkeydown="return event.key != 'Enter';" class="uk-select @error('sch_id') uk-form-danger @enderror uk-form-width-large" id="sch_id"
                     name="sch_id" onchange="load_sch_level()" value="{{ old('sch_id')?:Auth::User()->sch_id }}">
                     <option value="">-- Select School --</option>
                     @foreach ($schools as $school)
@@ -288,7 +288,7 @@
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="sch_level"> School Level</label>
                 <div class="uk-form-controls">
-                  <select class="uk-select @error('sch_level') uk-form-danger @enderror  uk-form-width-large"
+                  <select onkeydown="return event.key != 'Enter';" class="uk-select @error('sch_level') uk-form-danger @enderror  uk-form-width-large"
                     id="sch_level" name="sch_level" value="{{ old('sch_level')?:Auth::User()->sch_level }}">
                     <option value="">-- Select Level --</option>
                     @if (old('sch_level') !== null)
@@ -306,7 +306,7 @@
             <div class="uk-width-1-2">
               <div class="uk-inline">
                 <label class="uk-form-label form-label" for="sch_faculty">Faculty</label>
-                <input placeholder="Faculty"
+                <input onkeydown="return event.key != 'Enter';" placeholder="Faculty"
                   class="uk-input @error('sch_faculty') uk-form-danger @enderror uk-form-width-large" type="text"
                   id="sch_faculty" name="sch_faculty" value="{{ old('sch_faculty')?:Auth::User()->sch_faculty }}">
               </div>
@@ -317,8 +317,8 @@
             <div class="uk-width-1-1">
               <div class="uk-width-1-1" uk-form-custom="target: true">
                 <label class="uk-form-label form-label" for="form-stacked-text ">Profile Image</label>
-                <input type="file" accept=".jpeg,.gif,.jpg,.png" id="avatar" name="avatar">
-                <input class="uk-input @error('last_name') uk-form-danger @enderror uk-width-1-1" type="text"
+                <input onkeydown="return event.key != 'Enter';" type="file" accept=".jpeg,.gif,.jpg,.png" id="avatar" name="avatar">
+                <input onkeydown="return event.key != 'Enter';" class="uk-input @error('last_name') uk-form-danger @enderror uk-width-1-1" type="text"
                   placeholder="Select Profile image" disabled>
               </div>
               @error('avatar')
@@ -330,7 +330,7 @@
                 <label class="uk-form-label form-label" for="form-stacked-text ">Select your Media Images (5)
                   Max</label>
                 <input type="file" onchange="val_file_count(this)" multiple accept=".jpeg,.gif,.jpg,.png" id="media" name="media[]">
-                <input class="uk-input @error('last_name') uk-form-danger @enderror uk-width-1-1" type="text"
+                <input onkeydown="return event.key != 'Enter';" class="uk-input @error('last_name') uk-form-danger @enderror uk-width-1-1" type="text"
                   placeholder="Select Media image" multiple accept=".jpeg,.gif,.jpg,.png" disabled>
               </div>
               @error('media')
@@ -339,11 +339,14 @@
             </div>
             <div class="uk-width-1-1">
               <div class="uk-inline">
-                <label class="uk-form-label form-label" for="bio">Bio</label>
-                <textarea placeholder="Bio" rows="3"
+                <label class="uk-form-label form-label" for="bio">Bio (5000 Character Max)</label>
+              <textarea placeholder="Bio" rows="6" onkeyup="count_bio(this)"
                   class="uk-textarea @error('bio') uk-form-danger @enderror uk-form-width-large" id="bio" name="bio"
                   required>{{ old('bio') != null?old('bio'):Auth::User()->bio }}</textarea>
               </div>
+              <span class="uk-label uk-label-warning" id="bio_counter">
+                Characters left: {{5000 - strlen(Auth::user()->bio)}}
+              </span>
               @error('bio')
               <span class="uk-text-danger">{{ $message }}</span>
               @enderror
@@ -399,5 +402,9 @@
       media_selector.preventDefault();
     }
   }
+  
+  function count_bio(bio){
+  document.getElementById('bio_counter').innerHTML = "Characters left: " + (5000 - bio.value.length);
+};
 </script>
 @endpush
