@@ -258,7 +258,7 @@ class ContestController extends Controller
         $img->move($destination_path, $img_name);
         $data['image'] = $img_name;
         if ($updateable_contest->image != null) {
-          $path = public_path(sprintf("images/contest/%s/%s", $updateable_contest->id, $updateable_contest->image));
+          $path = public_path(sprintf("images/contests/%s/%s", $updateable_contest->id, $updateable_contest->image));
           if (File::exists($path)) {
             File::delete($path);
           }
