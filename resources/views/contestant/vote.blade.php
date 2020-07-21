@@ -102,7 +102,7 @@
         </div>
         <div class="uk-width-1-1 uk-width-1-2@s">
           <label class="uk-form-label form-label" for="quantity">Number of Vote</label>
-          <input class="uk-input" type="number" id="xquantity" value="1" name="xquantity"
+        <input class="uk-input" type="number" id="xquantity" value="{{$contest->minimum_vote}}" name="xquantity"
             min="{{$contest->minimum_vote}}" onkeyup="calc_vote_amt()" onchange="calc_vote_amt()">
         </div>
         <input type="hidden" name="quantity" value="1">
