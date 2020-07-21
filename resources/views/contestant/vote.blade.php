@@ -102,7 +102,7 @@
         </div>
         <div class="uk-width-1-1 uk-width-1-2@s">
           <label class="uk-form-label form-label" for="quantity">Number of Vote</label>
-        <input class="uk-input" type="number" id="xquantity" value="{{$contest->minimum_vote}}" name="xquantity"
+        <input class="uk-input" type="number" id="xquantity" value="{{floor($contest->minimum_vote)}}" name="xquantity"
             min="{{$contest->minimum_vote}}" onkeyup="calc_vote_amt()" onchange="calc_vote_amt()">
         </div>
         <input type="hidden" name="quantity" value="1">
@@ -110,7 +110,7 @@
         <input type="hidden" name="contestant_id" value="{{$contestant->id}}">
         <div class="uk-width-2-3 uk-align-center uk-animation-toggle" tabindex="0">
           <button type="submit" class="uk-button uk-width-1-1" style="background-color:#3D9FB9; color:white;">
-            <b>Vote</b> N<span id="vote_amount">{{$contest->vote_fee * $contest->minimum_vote}}</span></button>
+            <b>Vote</b> N<span id="vote_amount">{{floor($contest->vote_fee * $contest->minimum_vote)}}</span></button>
         </div>
 
       </form>
