@@ -54,6 +54,11 @@
           {{ route('contestant_edit_profile') }}
           ">{{ __('Edit Profile') }}</a>
           </li>
+          <li><a
+            class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
+            href="
+              {{ route('get_application') }}
+              ">{{ __('Application list') }}</a></li>
           @if (!Auth::User()->role=='admin')
           <li><a
               class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
@@ -78,6 +83,21 @@
               href="
                 {{ route('admin_list_contestant') }}
                 ">{{ __('Contestant List ') }}</a></li>
+          <li><a
+              class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
+              href="
+                      {{ route('admin_get_application',['status'=>'pending']) }}
+                      ">{{ __('Pending Applications') }}</a></li>
+          <li><a
+              class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
+              href="
+                          {{ route('admin_get_application',['status'=>'declined']) }}
+                          ">{{ __('Rejected Applications') }}</a></li>
+          <li><a
+              class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
+              href="
+                              {{ route('admin_get_application',['status'=>'approved']) }}
+                              ">{{ __('Approved Applications') }}</a></li>
           <li><a
               class="uk-button uk-border-pill uk-background-primary white-text uk-text-emphasis uk-width-1-1 uk-margin-small-bottom"
               href="
@@ -114,7 +134,7 @@
           <div class="uk-navbar" data-uk-navbar>
             <div class="uk-navbar-left">
               <a class="uk-navbar-item uk-logo" href="/">
-              <img src="{{asset('images/misc/default_logo.png')}}" width="50px" height="50px">
+                <img src="{{asset('images/misc/default_logo.png')}}" width="50px" height="50px">
               </a>
             </div>
             <div class="uk-navbar-right">

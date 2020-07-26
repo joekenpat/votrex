@@ -86,7 +86,9 @@ class PaymentController extends Controller
     } catch (\Exception $e) {
       return back()->with('error', $e->getMessage())->withInput();
     }
-
+    if($contest->vote_fee == 0){
+      return redirect()->route('visit_contest_contestant', ['contest_id' => $new_vote->contest_id, 'contestant_id' => $new_vote->user_id])->with('success', sprintf('Your Vote for %s was Successful!', $new_vote->contestant->get_full_name()));
+    }
     return $paystack->getAuthorizationUrl()->redirectNow();
   }
 
@@ -98,9 +100,6 @@ class PaymentController extends Controller
   {
     $paystack = new Paystack();
     $paymentDetails = $paystack->getPaymentData();
-
-    // dd($paymentDetails);
-    // dd($paymentDetails['data']['reference']);
     $valid_vote = Vote::where('paystack_ref', $paymentDetails['data']['reference'])->firstOrFail();
     if ($paymentDetails['data']['status'] === "success") {
       $valid_vote->status =  'valid';

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contest;
+use App\Notifications\ContestApplicationStatus;
 use App\School;
 use App\User;
 use Exception;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
@@ -95,7 +97,7 @@ class ContestController extends Controller
     if ($contest_id !== null) {
       try {
         $contest = Contest::where('id', $contest_id)->firstOrFail();
-        $contestants = $contest->contestants()->paginate(10);
+        $contestants = $contest->contestants()->where('status', 'approved')->paginate(10);
         // $contestant_votes = $contestant->votes()->where('contest_id', $contest_id)->where('status', 'valid')->get();
         // dd($contestants);
         return view('contestant.index', ['contest' => $contest, 'contestants' => $contestants]);
@@ -319,10 +321,13 @@ class ContestController extends Controller
       if ($contest->is_active()) {
         if ($contestant->is_profile_complete()) {
           if (!$contestant->contests()->where('contest_id', $contest_id)->exists()) {
-            $contestant->contests()->attach([$contest_id]);
-            return redirect()->route('list_contest_contestant', ['contest_id' => $contest_id])->with('success', 'Contest Joined Successfully.');
+            $contestant->contests()->attach([
+              $contest_id =>
+              ['status' => 'pending'],
+            ]);
+            return redirect()->route('list_contest_contestant', ['contest_id' => $contest_id])->with('success', 'Application sent for review to the Administrator Successfully. You will be notified of the status later on ');
           } else {
-            return redirect()->route('list_contest_contestant', ['contest_id' => $contest_id])->with('info', 'Already Joined Contest Earlier.');
+            return redirect()->route('list_contest_contestant', ['contest_id' => $contest_id])->with('info', 'Already applied for Contest earlier.');
           }
         } else {
           return redirect()->route('list_contest')->with('info', "Please Complete Missing data in your profile");
@@ -331,7 +336,64 @@ class ContestController extends Controller
         return redirect()->route('list_contest')->with('info', 'Contest has been closed.');
       }
     } catch (Exception $e) {
-      dd($e);
+      return back()->with('error', $e->getMessage());
+    }
+  }
+
+
+  /**
+   * Display the specified resource.
+   *
+   * @param  \App\User  $contestant_id
+   * @param  \App\Contest  $contest_id
+   * @return \Illuminate\Http\Response
+   */
+  public function admin_get_application($status)
+  {
+    try {
+      $applications = DB::table('contest_user')->where('status', $status)->paginate(10);
+      foreach ($applications as $key => $application) {
+        $applications[$key]->user = User::where('id', $application->user_id)->first();
+        $applications[$key]->contest = Contest::where('id', $application->contest_id)->first();
+      }
+      if ($status == 'pending') {
+        return view('contest.pending_request', ['applications' => $applications]);
+      } else if ($status == 'approved') {
+        return view('contest.approved_request', ['applications' => $applications]);
+      } else if ($status == 'declined') {
+        return view('contest.declined_request', ['applications' => $applications]);
+      }
+    } catch (\Exception $e) {
+      return back()->with('error', $e->getMessage());
+    }
+  }
+  public function get_application()
+  {
+    try {
+      $applications = DB::table('contest_user')->where('user_id', Auth::user()->id)->paginate(10);
+      foreach ($applications as $key => $application) {
+        $applications[$key]->user = User::where('id', $application->user_id)->first();
+        $applications[$key]->contest = Contest::where('id', $application->contest_id)->first();
+      }
+      return view('contest.all_request', ['applications' => $applications]);
+    } catch (\Exception $e) {
+      return back()->with('error', $e->getMessage());
+    }
+  }
+
+  public function set_application($contest_id, $contestant_id, $status)
+  {
+    try {
+      $contest = Contest::where('id', $contest_id)->firstOrFail();
+      $contestant = User::where('id', $contestant_id)->firstOrFail();
+      $contestant->contests()->updateExistingPivot(
+        $contest->id,
+        ['status' => $status],
+      );
+      $contestant->notify(new ContestApplicationStatus($contestant, $contest));
+      return back()->with('success', "Application marked as {$status}.");
+    } catch (\Exception $e) {
+      return back()->with('error', $e->getMessage());
     }
   }
 

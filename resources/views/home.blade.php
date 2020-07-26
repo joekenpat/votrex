@@ -3,20 +3,20 @@
 @section('content')
 @if (Auth::user()->is_admin())
 <div class="uk-container uk-padding-small">
-  <div uk-grid>
-    <div class="uk-width-1-2@m uk-width-1-1@s uk-text-center">
+  <div class="uk-child-width-1-3@l uk-child-width-1-2@m uk-child-width-1-1@s uk-text-center" uk-grid>
+    <div class="">
       <a href="{{route('admin_list_contest')}}" style="text-decoration:none;">
-      <div class="uk-card uk-card-default uk-card-body  uk-text-center">
-        <h3 class="uk-card-title">CONTEST</h3>
-        <div class="uk-flex uk-flex-center">
+        <div class="uk-card uk-card-default uk-card-body  uk-text-center">
+          <h3 class="uk-card-title">CONTEST</h3>
+          <div class="uk-flex uk-flex-center">
 
-          <p class="uk-width-1-3 uk-border-circle  uk-padding-medium count">{{$contest_count}}</p>
+            <p class="uk-width-1-3 uk-border-circle  uk-padding-medium count">{{$contest_count}}</p>
+          </div>
         </div>
-      </div>
       </a>
     </div>
-    <div class="uk-width-1-2@m uk-width-1-1@s uk-text-center">
-    <a href="{{route('admin_list_contestant')}}" style="text-decoration:none;">
+    <div class="">
+      <a href="{{route('admin_list_contestant')}}" style="text-decoration:none;">
         <div class="uk-card uk-card-default uk-card-body  uk-text-center">
           <h3 class="uk-card-title">CONTESTANTS</h3>
           <div class="uk-flex uk-flex-center">
@@ -26,29 +26,39 @@
         </div>
       </a>
     </div>
-    <div class="uk-width-1-2@m uk-width-1-1@s uk-text-center">
+    <div class="">
       <a href="{{route('list_vote')}}" style="text-decoration:none;">
-      <div class="uk-card uk-card-default uk-card-body  uk-text-center">
-        <h3 class="uk-card-title">VOTES</h3>
-        <div class="uk-flex uk-flex-center">
+        <div class="uk-card uk-card-default uk-card-body  uk-text-center">
+          <h3 class="uk-card-title">VOTES</h3>
+          <div class="uk-flex uk-flex-center">
 
-          <p class="uk-width-1-3 uk-border-circle  uk-padding-medium count">{{$vote_count}}</p>
+            <p class="uk-width-1-3 uk-border-circle  uk-padding-medium count">{{$vote_count}}</p>
+          </div>
         </div>
-      </div>
       </a>
     </div>
-    <div class="uk-width-1-2@m uk-width-1-1@s uk-text-center">
+    <div class="">
       <a href="{{route('admin_list_school')}}" style="text-decoration:none;">
-      <div class="uk-card uk-card-default uk-card-body  uk-text-center">
-        <h3 class="uk-card-title">SCHOOL</h3>
-        <div class="uk-flex uk-flex-center">
+        <div class="uk-card uk-card-default uk-card-body  uk-text-center">
+          <h3 class="uk-card-title">SCHOOL</h3>
+          <div class="uk-flex uk-flex-center">
 
-          <p class="uk-width-1-3 uk-border-circle  uk-padding-medium count">{{$school_count}}</p>
+            <p class="uk-width-1-3 uk-border-circle  uk-padding-medium count">{{$school_count}}</p>
+          </div>
         </div>
-      </div>
       </a>
     </div>
+    <div class="">
+      <a href="{{route('admin_get_application',['status'=>'pending'])}}" style="text-decoration:none;">
+        <div class="uk-card uk-card-default uk-card-body  uk-text-center">
+          <h3 class="uk-card-title">APPLICATIONS</h3>
+          <div class="uk-flex uk-flex-center">
 
+            <p class="uk-width-1-3 uk-border-circle  uk-padding-medium count">{{$pending_application_count}}</p>
+          </div>
+        </div>
+      </a>
+    </div>
   </div>
 </div>
 @else
@@ -116,7 +126,8 @@
         <div>
           <a class="uk-inline ph" href="{{asset(sprintf("images/users/%s/%s",Auth()->user()->id, $img))}}"
             data-caption="Caption 1">
-            <img class="uk-width-1-1" src="{{asset(sprintf("images/users/%s/%s",Auth()->user()->id, $img))}}" style="max-height:200px; object-fit:cover;" alt="">
+            <img class="uk-width-1-1" src="{{asset(sprintf("images/users/%s/%s",Auth()->user()->id, $img))}}"
+              style="max-height:200px; object-fit:cover;" alt="">
           </a>
         </div>
         @endforeach

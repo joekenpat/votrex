@@ -37,8 +37,13 @@
             <td>{{$contest->contestants->count()}}</td>
             <td>
               <div>
-                <a onclick="confirm_action(event, this)" href="{{route('admin_edit_contest',['contest_id'=>$contest->id])}}" style="color:blue" uk-tooltip="Edit Contest" class="uk-icon-link uk-margin-small-right" uk-icon="icon:file-edit; ratio:1.3"></span></a>
-                <a onclick="confirm_action(event, this)" href="{{route('admin_delete_contest',['contest_id'=>$contest->id])}}" style="color:red" uk-tooltip="Delete Contest" class="uk-icon-link" uk-icon="icon:trash; ratio:1.3"></span></a>
+                <a onclick="confirm_action(event, this)"
+                  href="{{route('admin_edit_contest',['contest_id'=>$contest->id])}}" style="color:blue"
+                  uk-tooltip="Edit Contest" class="uk-icon-link uk-margin-small-right"
+                  uk-icon="icon:file-edit; ratio:1.3"></span></a>
+                <a onclick="confirm_action(event, this)"
+                  href="{{route('admin_delete_contest',['contest_id'=>$contest->id])}}" style="color:red"
+                  uk-tooltip="Delete Contest" class="uk-icon-link" uk-icon="icon:trash; ratio:1.3"></span></a>
               </div>
             </td>
           </tr>
@@ -99,7 +104,13 @@
             @if($contest->is_active())
             @auth
             @if (Auth::user()->contests()->where('contest_id', $contest->id)->exists())
+            @if (Auth::user()->contests()->where('contest_id', $contest->id)->first()->pivot->status == 'pending')
+            <span class="uk-label uk-label-warning">PENDING</span>
+            @elseif(Auth::user()->contests()->where('contest_id', $contest->id)->first()->pivot->status == 'declined')
+            <span class="uk-label uk-label-danger">REJECTED</span>
+            @else
             <span class="uk-label uk-label-success">JOINED</span>
+            @endif
             @else
             <a href="{{ route('join_contest',['contest_id'=>$contest->id]) }}"
               class="uk-button uk-button-small uk-width-1-1 uk-margin-small" style="background-color:#3D9FB9; border-radius: 5px; box-shadow: 0px 0px 3px 0px black;

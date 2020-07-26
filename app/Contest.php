@@ -17,7 +17,7 @@ class Contest extends Model
   protected $fillable = [
     'title', 'minimum_vote','vote_fee',
     'image',
-    'status','started_at','ended_at',
+    'started_at','ended_at',
   ];
 
   /**
@@ -46,8 +46,14 @@ class Contest extends Model
    */
   public function contestants()
   {
-    return $this->belongsToMany(User::class,  'contest_user', 'contest_id','user_id');
+    return $this->belongsToMany(User::class,  'contest_user', 'contest_id','user_id')->withPivot('status');
   }
+
+  /**
+   * returns the contests the user belongs to.
+   *
+   * @var app
+   */
 
   public function votes()
   {
