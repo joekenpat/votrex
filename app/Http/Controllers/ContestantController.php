@@ -95,13 +95,13 @@ class ContestantController extends Controller
       $contestant_count = User::count();
       $vote_count = Vote::where('status', 'valid')->count();
       $school_count = School::count();
-      $pending_application_count = DB::table('contest_user')->where('status','pending')->count();
+      $pending_application_count = DB::table('contest_user')->where('status', 'pending')->count();
       return view('home', [
         'contest_count' => $contest_count,
         'contestant_count' => $contestant_count,
         'vote_count' => $vote_count,
         'school_count' => $school_count,
-        'pending_application_count'=> $pending_application_count,
+        'pending_application_count' => $pending_application_count,
       ]);
     }
     return view('home');
@@ -201,7 +201,11 @@ class ContestantController extends Controller
         $data['media'] = $image_url;
       }
       User::find(Auth::user()->id)->update($data);
-      return redirect()->route('contestant_view_profile')->with('success', 'Profile Updated');
+      $user = User::where('id', Auth::user()->id)->firstOrFail();
+      if ($user->is_profile_complete()) {
+        return redirect()->route('contestant_view_profile')->with('success', sprintf("Profile update completed. <b><a href='%s'>Click here</a></b> to see or join ongoing contest", route('list_contest')));
+      }
+      return redirect()->route('contestant_view_profile')->with('success', 'Profile update completed');
     } catch (ModelNotFoundException $mnt) {
       return back()->with('error', 'Contestant not found');
     } catch (\Exception $e) {
