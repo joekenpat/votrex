@@ -13,14 +13,16 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-  return view('welcome');
+/* guest routes */
+Route::get('/home', function () {
+  if (Auth::check() && Auth::user()->is_admin()) {
+    return redirect()->route('contestant_view_profile');
+  }
+  return redirect()->route('list_contest');
 });
 
-
-
 /* Authentication Routes */
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::get('email/verify', 'Auth\VerificationController@show')->name('verification.notice');
 Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
@@ -55,6 +57,7 @@ Route::group(['prefix' => 'contest'], function () {
   /* authenticated user route for contest manipulation */
   Route::group(['middleware' => ['auth']], function () {
     Route::get('/{contest_id}/join', 'ContestController@join')->name('join_contest');
+    Route::get('/application/all', 'ContestController@get_application')->name('get_application');
   });
 });
 
@@ -73,6 +76,9 @@ Route::group(['prefix' => 'contest', 'middleware' => ['auth', 'is_admin']], func
   Route::get('/edit/{contest_id}', 'ContestController@edit')->name('admin_edit_contest');
   Route::post('/update/{contest_id}', 'ContestController@update')->name('admin_update_contest');
   Route::get('/delete/{contest_id}', 'ContestController@destroy')->name('admin_delete_contest');
+  Route::get('/application/{status}', 'ContestController@admin_get_application')->name('admin_get_application');
+  Route::get('/{contest_id}/set_application/{contestant_id}/status/{status}', 'ContestController@set_application')->name('admin_set_application');
+
 });
 
 /* admin route for school manipulation */
@@ -90,12 +96,6 @@ Route::group(['prefix' => 'school', 'middleware' => ['auth', 'is_admin']], funct
 Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
 Route::get('/payment/callback', 'PaymentController@handleGatewayCallback')->name('payment_callback');
 
-/* guest routes */
-Route::get('/', function () {
-  if (Auth::check() && Auth::user()->is_admin()) {
-    return redirect()->route('contestant_view_profile');
-  }
-  return redirect()->route('list_contest');
-});
+
 Route::get('vote/list', 'VoteController@index')->name('list_vote')->middleware('auth');
 Route::get('/contestant/{contestant_id}', 'ContestantController@visit_contestant')->name('visit_contestant');

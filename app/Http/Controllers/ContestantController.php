@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
@@ -94,11 +95,13 @@ class ContestantController extends Controller
       $contestant_count = User::count();
       $vote_count = Vote::where('status', 'valid')->count();
       $school_count = School::count();
+      $pending_application_count = DB::table('contest_user')->where('status','pending')->count();
       return view('home', [
         'contest_count' => $contest_count,
         'contestant_count' => $contestant_count,
         'vote_count' => $vote_count,
         'school_count' => $school_count,
+        'pending_application_count'=> $pending_application_count,
       ]);
     }
     return view('home');

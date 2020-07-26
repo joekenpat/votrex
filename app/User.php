@@ -68,7 +68,7 @@ class User extends Authenticatable
    */
   public function contests()
   {
-    return $this->belongsToMany(Contest::class,  'contest_user', 'user_id', 'contest_id');
+    return $this->belongsToMany(Contest::class,  'contest_user', 'user_id', 'contest_id')->withPivot('status');
   }
 
   public function votes()

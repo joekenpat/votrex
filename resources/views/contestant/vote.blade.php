@@ -77,7 +77,7 @@
     </div>
   </div>
   @endif
-  @if ($contest->is_active())
+  @if ($contest->is_active() && $contestant->contests()->where('contest_id', $contest->id)->first()->pivot->status == 'approved'))
   <div class="uk-card uk-card-default my-card uk-margin-top">
     <div class="uk-card-header">
       <div class="uk-width-expand">
