@@ -330,7 +330,7 @@ class ContestController extends Controller
             return redirect()->route('list_contest_contestant', ['contest_id' => $contest_id])->with('info', 'Already applied for Contest earlier.');
           }
         } else {
-          return redirect()->route('list_contest')->with('info', "Please Complete Missing data in your profile");
+          return redirect()->route('list_contest')->with('info', sprintf("You must complete your profile before joining the contest. <b><a href='%s'>Click here</a></b> to complete it", route('contestant_edit_profile')));
         }
       } else {
         return redirect()->route('list_contest')->with('info', 'Contest has been closed.');

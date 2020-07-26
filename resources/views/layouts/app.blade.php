@@ -191,21 +191,21 @@
       <div class="uk-alert-success" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <h4>Success</h4>
-        <p>{{$message}}</p>
+        <p>{!! $message !!}</p>
       </div>
       @endif
       @if($message = Session::get('error'))
       <div class="uk-alert-danger" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <h4>Alert</h4>
-        <p>{{$message}}</p>
+        <p>{!! $message !!}</p>
       </div>
       @endif
       @if($message = Session::get('info'))
       <div class="uk-alert-warning" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <h4>Notice</h4>
-        <p>{{$message}}</p>
+        <p>{!! $message !!}</p>
       </div>
       @endif
       @yield('content')
