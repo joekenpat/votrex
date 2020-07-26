@@ -51,7 +51,7 @@ class ContestApplicationStatus extends Notification implements ShouldQueue
       ->greeting($greeting)
       ->line($title)
       ->line($message1)
-      ->action('View contest applications', route('get_applications'))
+      ->action('View contest applications', route('get_application'))
       ->line(sprintf("You are receiving this email because your are registered as %s at Forsi.org", $this->user->role == 'admin' ? 'an Administrator' : 'a Contestant'));
   }
 
