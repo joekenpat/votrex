@@ -21,6 +21,14 @@ Route::get('/home', function () {
   return redirect()->route('list_contest');
 });
 
+/* guest routes */
+Route::get('/', function () {
+  if (Auth::check() && Auth::user()->is_admin()) {
+    return redirect()->route('contestant_view_profile');
+  }
+  return redirect()->route('list_contest');
+});
+
 /* Authentication Routes */
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
