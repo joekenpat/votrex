@@ -42,11 +42,11 @@
   <div class="uk-card uk-card-default my-card uk-margin-top uk-margin-top">
     <div class="uk-card-header">
       <div class="uk-width-expand">
-        <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">{{$contestant->first_name}} Media
+        <h3 class="uk-card-title uk-margin-remove-bottom"><b style="color: white">{{$contestant->first_name}}
             Bio</b></h3>
       </div>
     </div>
-    <div class="uk-card-body">
+    <div class="uk-card-body" style="color:#fff;">
       {{$contestant->bio}}
     </div>
   </div>
@@ -77,7 +77,8 @@
     </div>
   </div>
   @endif
-  @if ($contest->is_active() && $contestant->contests()->where('contest_id', $contest->id)->first()->pivot->status == 'approved'))
+  @if ($contest->is_active() && $contestant->contests()->where('contest_id', $contest->id)->first()->pivot->status ==
+  'approved')
   <div class="uk-card uk-card-default my-card uk-margin-top">
     <div class="uk-card-header">
       <div class="uk-width-expand">
@@ -86,7 +87,7 @@
       </div>
     </div>
     <div class="uk-card-body">
-      <form class="uk-grid-small content" id="vote_form" method="POST" action="{{route('pay')}}" uk-grid>
+      <form class="uk-grid-small content" id="vote_form" method="POST" uk-grid>
         @csrf
         <div class="uk-width-1-1 uk-width-1-2@s">
           <label class="uk-form-label form-label" for="first_name">Your First Name</label>
@@ -102,15 +103,31 @@
         </div>
         <div class="uk-width-1-1 uk-width-1-2@s">
           <label class="uk-form-label form-label" for="quantity">Number of Vote</label>
-        <input class="uk-input" type="number" id="xquantity" value="{{floor($contest->minimum_vote)}}" name="xquantity"
-            min="{{$contest->minimum_vote}}" onkeyup="calc_vote_amt()" onchange="calc_vote_amt()">
+          <input class="uk-input" type="number" id="xquantity" value="{{floor($contest->minimum_vote)}}"
+            name="xquantity" min="{{$contest->minimum_vote}}" onkeyup="calc_vote_amt()" onchange="calc_vote_amt()">
         </div>
         <input type="hidden" name="quantity" value="1">
         <input type="hidden" name="contest_id" value="{{$contest->id}}">
         <input type="hidden" name="contestant_id" value="{{$contestant->id}}">
-        <div class="uk-width-2-3 uk-align-center uk-animation-toggle" tabindex="0">
-          <button type="submit" class="uk-button uk-width-1-1" style="background-color:#3D9FB9; color:white;">
-            <b>Vote</b> N<span id="vote_amount">{{floor($contest->vote_fee * $contest->minimum_vote)}}</span></button>
+
+        <div class="uk-width-1-1 uk-align-center uk-text-large uk-text-center uk-margin-remove-bottom" style="color:white;">
+          @&#8358;<span id="vote_amount">{{floor($contest->vote_fee * $contest->minimum_vote)}}</span>
+        </div>
+        <div class="uk-width-2-3 uk-align-center uk-divider-icon uk-margin-remove-bottom">
+        </div>
+        <div class="uk-width-1-1 uk-align-center uk-text-center uk-margin-remove-bottom" style="color:white;">
+          <b>Proceed With: </b>
+        </div>
+
+        <div class="uk-width-1-2@s uk-width-1-1 uk-align-center uk-animation-toggle uk-text-center uk-margin-small-bottom">
+        <button type="submit" formaction="{{route('flutterwave_pay')}}"  class="uk-button uk-button-small uk-width-1-1 uk-border-rounded uk-padding-small" style="background-color:white;">
+           <img style="height:30px;" src="{{asset('images/misc/flutterwave.png')}}" alt="">
+          </button>
+        </div>
+        <div class="uk-width-1-2@s uk-width-1-1 uk-align-center uk-animation-toggle uk-text-center uk-margin-small-bottom">
+          <button type="submit" formaction="{{route('paystack_pay')}}" class="uk-button uk-button-small uk-width-1-1 uk-border-rounded uk-padding-small" style="background-color:white;">
+           <img style="height:30px;" src="{{asset('images/misc/paystack.png')}}" alt="">
+          </button>
         </div>
 
       </form>
