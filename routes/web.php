@@ -101,8 +101,11 @@ Route::group(['prefix' => 'school', 'middleware' => ['auth', 'is_admin']], funct
 
 
 /* paystack routes */
-Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
-Route::get('/payment/callback', 'PaymentController@handleGatewayCallback')->name('payment_callback');
+Route::post('/paystack/pay', 'PaymentController@redirectToGateway')->name('paystack_pay');
+Route::get('/paystack/payment/callback', 'PaymentController@handleGatewayCallback')->name('paystack_payment_callback');
+
+Route::post('/flutterwave/pay', 'PaymentController@initialize')->name('flutterwave_pay');
+Route::get('/flutterwave/rave/callback', 'PaymentController@callback')->name('flutterwave_callback');
 
 
 Route::get('vote/list', 'VoteController@index')->name('list_vote')->middleware('auth');
