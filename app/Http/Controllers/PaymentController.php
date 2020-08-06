@@ -140,6 +140,9 @@ class PaymentController extends Controller
    */
   public function initialize(Request $request)
   {
+    if($request->method() == 'GET'){
+      return redirect()->route('list_contest');
+    }
     $validator = Validator::make($request->all(), [
       'contest_id' => 'required|uuid|exists:contests,id|',
       'contestant_id' => 'required|uuid|exists:users,id|',
@@ -235,6 +238,7 @@ class PaymentController extends Controller
   public function callback(Request $request)
   {
     $resp = json_decode($request->resp);
+    return dd($resp);
     $data = Rave::verifyTransaction($resp->data->data->txRef);
     $valid_vote = Vote::where('gateway', 'flutterwave')->where('transaction_ref', $resp->data->data->txRef)->firstOrFail();
     if ($data->status == 'success' && $data->data->chargecode == "00") {
