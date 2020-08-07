@@ -17,8 +17,8 @@ class Vote extends Model
 
   protected $fillable = [
     'first_name', 'last_name','email',
-    'paystack_ref','status','quantity',
-    'user_id','contest_id'
+    'transaction_ref','status','quantity',
+    'user_id','contest_id','gateway'
   ];
 
   /**
