@@ -93,7 +93,7 @@ class PaymentController extends Controller
         $new_vote->contest_id = $contest->id;
         $new_vote->save();
 
-        $request->reference = $new_vote->paystack_ref;
+        $request->reference = $new_vote->transaction_ref;
         $request->amount = ($new_vote->amount * 100);
         $request->quantity = 1;
         $request->metadata = ['contestant_id' => $contestant->id, 'contest_id' => $contest->id,];
@@ -239,7 +239,7 @@ class PaymentController extends Controller
   public function callback(Request $request)
   {
     $resp = json_decode($request->resp);
-    return dd($resp);
+    // return dd($resp);
     $data = Rave::verifyTransaction($resp->data->data->txRef);
     $valid_vote = Vote::where('gateway', 'flutterwave')->where('transaction_ref', $resp->data->data->txRef)->firstOrFail();
     if ($data->status == 'success' && $data->data->chargecode == "00") {
