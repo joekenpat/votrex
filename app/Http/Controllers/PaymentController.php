@@ -114,7 +114,7 @@ class PaymentController extends Controller
   {
     $paystack = new Paystack();
     $paymentDetails = $paystack->getPaymentData();
-    return dd($paymentDetails);
+    // return dd($paymentDetails);
     $valid_vote = Vote::where('gateway', 'paystack')->where('transaction_ref', $paymentDetails['data']['reference'])->firstOrFail();
     if ($paymentDetails['data']['status'] === "success") {
       $valid_vote->status =  'valid';
