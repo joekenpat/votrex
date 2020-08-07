@@ -93,7 +93,7 @@ class PaymentController extends Controller
         $new_vote->contest_id = $contest->id;
         $new_vote->save();
 
-        $request->reference = $new_vote->paystack_ref;
+        $request->reference = $new_vote->transaction_ref;
         $request->amount = ($new_vote->amount * 100);
         $request->quantity = 1;
         $request->metadata = ['contestant_id' => $contestant->id, 'contest_id' => $contest->id,];
