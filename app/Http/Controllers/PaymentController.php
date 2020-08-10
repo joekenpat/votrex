@@ -240,7 +240,7 @@ class PaymentController extends Controller
   {
     $resp = json_decode($request->resp);
     // return dd($resp);
-    $data = Rave::verifyTransaction($resp->data->data->txRef);
+    $data = Rave::verifyTransaction($resp->data->tx->txRef);
     $valid_vote = Vote::where('gateway', 'flutterwave')->where('transaction_ref', $resp->data->tx->txRef)->firstOrFail();
     if ($data->status == 'success' && $data->data->chargecode == "00") {
       $valid_vote->status =  'valid';
